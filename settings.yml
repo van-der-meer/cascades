@@ -1,0 +1,13 @@
+window:
+  units: pix
+  size: [1000, 800]  # macOS often renders at 2x resolution – this is the "scaled" default
+  color: [0, 0, 0]
+  fullscr: True  # or False for debugging
+
+monitor:
+  name: monitor_lab
+  width: 50  # width of monitor (in cm)
+  distance: 80  # distance of participant from monitor (in cm)
+  gamma: 1  # specific value for gamma correction
+  verbose: True
+
