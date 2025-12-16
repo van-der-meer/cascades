@@ -1,21 +1,12 @@
-import yaml
-import json
 import numpy as np
 from functions import *
 from psychopy import visual, event, core
 from exptools2.core import Trial, Session
 #from psychopy.visual import TextStim, Circle
 
+exp_folder_path = "experiment_params/v1"
 
-# Get experiment parameters
-with open('exp_params.yml', 'r') as file:
-    exp_params = yaml.safe_load(file)
-
-# Get instruction texts
-with open("exp_texts.json", "r", encoding="utf-8") as f:
-    exp_texts = json.load(f)
-
-
+exp_params, exp_texts = open_params(exp_folder_path)
 
 class CascTrial(Trial):
     
@@ -159,7 +150,61 @@ class TextTrial(Trial):
         #self.session.win.flip()  # clear screen after trial
         core.wait(0.1)
 
-        
+
+class load_inst_trials():
+    def __init__(self, session, trial_nr):
+        # phase_durations=None → trial does not end until we say so
+        super().__init__(
+            session=session,
+            trial_nr=trial_nr,
+            phase_durations=[1],     # IMPORTANT: unlimited duration
+            phase_names=[1],
+            timing="seconds", 
+        )
+
+
+    def run(self):
+
+        loading_text = visual.TextStim(
+            self.win,
+            text="Please wait… loading trials",
+            height=0.05
+        )
+
+        loading_text.draw()
+        self.win.flip()
+
+        self.session.create_inst_trials()
+
+        self.win.flip()  # clear screen
+
+
+class load_exp_trials():
+    def __init__(self, session, trial_nr):
+        # phase_durations=None → trial does not end until we say so
+        super().__init__(
+            session=session,
+            trial_nr=trial_nr,
+            phase_durations=[1],     # IMPORTANT: unlimited duration
+            phase_names=[1],
+            timing="seconds", 
+        )
+
+
+    def run(self):
+
+        loading_text = visual.TextStim(
+            self.win,
+            text="Please wait… loading trials",
+            height=0.05
+        )
+
+        loading_text.draw()
+        self.win.flip()
+
+        self.session.create_exp_trials(mml_distances=self.session.distances)
+
+        self.win.flip()  # clear screen
         
 
 class CascExpSession(Session):
@@ -190,7 +235,7 @@ class CascExpSession(Session):
 
                     trial = TextTrial(
                             session=self,
-                            trial_nr=0,
+                            trial_nr=0,                             # change!!!
                             text=text, 
                             params=trial_params
                             )
@@ -247,19 +292,21 @@ class CascExpSession(Session):
                     self.exp_trials.append(trial)
             
     def run(self):
-        self.create_inst_trials()
+
         self.start_experiment()
+
+        inst_trial_loader = load_inst_trials(session=self, trial_nr=111)
+        inst_exp_loader = load_exp_trials(session=self, trial_nr=222)
+        inst_trial_loader.run()
         
         for trial in self.inst_trials:
             trial.run()
 
         #print(self.outputs)
 
-        distances = mml_distances(self.outputs)
+        self.distances = mml_distances(self.outputs)
 
-        print(distances)
-
-        self.create_exp_trials(mml_distances = distances)
+        inst_exp_loader.run()
 
         for trial in self.exp_trials:
             trial.run()

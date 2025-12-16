@@ -1,5 +1,38 @@
 import os 
+import yaml
+import json
 import numpy as np
+
+
+def find_file(folder_path, pattern):
+    files_with_params = [
+        f for f in os.listdir(folder_path)
+        if os.path.isfile(os.path.join(folder_path, f)) and pattern in f
+    ]
+    return files_with_params[0]
+
+
+def open_params(folder_path):
+    # Get experiment parameters
+
+    params_file = find_file(folder_path, "params")
+    text_file = find_file(folder_path, "texts")
+
+    params_file_path = folder_path + "/" + params_file
+    texts_file_path = folder_path + "/" + text_file
+
+    with open(params_file_path, 'r') as file:
+        exp_params = yaml.safe_load(file)
+
+    # Get instruction texts
+    with open(texts_file_path, "r", encoding="utf-8") as f:
+        exp_texts = json.load(f)
+
+    return exp_params, exp_texts
+
+
+
+
 
 def mq(params: dict, trial: dict, mml_distances = None):
 
