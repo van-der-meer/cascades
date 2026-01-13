@@ -241,6 +241,9 @@ class CascExpSession(Session):
         self.exp_trials = [] 
 
         self.outputs = []
+
+        self.output_str = output_str
+        self.output_dir = output_dir
         
     def create_inst_trials(self):
         """ Creates trials (ideally before running your session!) """
@@ -359,6 +362,11 @@ class CascExpSession(Session):
         self.thank_you = self.trial_params_list.pop()
 
         self.trial_params_list = self.trial_params_list + self.block_trials_expanded + [self.thank_you]
+
+        output_name = self.output_str + "/" + self.output_dir + "_stim_params.json"
+
+        with open(output_name, "w") as f:
+            json.dump(self.trial_params_list, f, indent=4)
 
 
         for trial_params in self.trial_params_list:
