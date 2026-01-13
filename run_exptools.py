@@ -363,7 +363,7 @@ class CascExpSession(Session):
 
         self.trial_params_list = self.trial_params_list + self.block_trials_expanded + [self.thank_you]
 
-        output_name = self.output_str + "/" + self.output_dir + "_stim_params.json"
+        output_name = self.output_dir + "/" + self.output_str + "_stim_params.json"
 
         with open(output_name, "w") as f:
             json.dump(self.trial_params_list, f, indent=4)
