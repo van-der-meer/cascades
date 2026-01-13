@@ -1,8 +1,11 @@
+import copy
 import numpy as np
 from functions import *
 from psychopy import visual, event, core
 from exptools2.core import Trial, Session
 #from psychopy.visual import TextStim, Circle
+
+
 
 exp_folder_path = "experiment_params/v1"
 
@@ -95,7 +98,8 @@ class CascTrial(Trial):
                         distance_switch = self.object_frames_array[self.space_frame, :, :]
 
                         trial_output = {"trial_identifier": self.trial_params.get("trial_identifier"), 
-                                        "distance_switch": distance_switch}
+                                        "distance_switch": distance_switch
+                                        }
 
                         self.session.outputs.append(trial_output)
 
@@ -108,9 +112,8 @@ class CascTrial(Trial):
         self.stop_trial()
         
 
-
 class TextTrial(Trial):
-    def __init__(self, session, trial_nr, text, params):
+    def __init__(self, session, trial_nr, exp_texts, params):
         # phase_durations=None → trial does not end until we say so
         super().__init__(
             session=session,
@@ -119,12 +122,27 @@ class TextTrial(Trial):
             phase_names=[1],
             timing="seconds", 
         )
-        self.textstim = visual.TextStim(self.session.win, pos=params.get("pos", (0, 0)), text=text, height=30)
+
+        self.text_objects = []
+
+        if params.get("trial_objects"):
+            for text_object in list(params.get("trial_objects").values()):
+                text_id = text_object.get("content")
+                text = exp_texts[text_id]
+                self.text_objects.append(visual.TextStim(self.session.win, pos=text_object.get("pos", (0, 0)), text=text, height=text_object.get("size", 30)))
+
+        else:
+            text_id = params.get("content")
+            text = exp_texts[text_id]
+            self.text_objects.append(visual.TextStim(self.session.win, pos=params.get("pos", (0, 0)), text=text, height=params.get("size", 30)))
+        
         self.continue_key = params.get("continue")
 
     def draw(self):
         """Draw the text every frame."""
-        self.textstim.draw()
+
+        for textstim in self.text_objects:
+            textstim.draw()
 
     def run(self):
         """Override run() so we can wait for a keypress."""
@@ -149,9 +167,9 @@ class TextTrial(Trial):
 
         #self.session.win.flip()  # clear screen after trial
         core.wait(0.1)
+        
 
-
-class load_inst_trials():
+class load_inst_trials(Trial):
     def __init__(self, session, trial_nr):
         # phase_durations=None → trial does not end until we say so
         super().__init__(
@@ -166,20 +184,23 @@ class load_inst_trials():
     def run(self):
 
         loading_text = visual.TextStim(
-            self.win,
-            text="Please wait… loading trials",
-            height=0.05
+            self.session.win,
+            text="Loading trials - please wait for a moment, this may take a while.",
+            height=30
         )
 
         loading_text.draw()
-        self.win.flip()
+        self.session.win.flip()
 
         self.session.create_inst_trials()
 
-        self.win.flip()  # clear screen
+        # Clear key buffer
+        keys = event.getKeys()
+
+        self.session.win.flip()  # clear screen
 
 
-class load_exp_trials():
+class load_exp_trials(Trial):
     def __init__(self, session, trial_nr):
         # phase_durations=None → trial does not end until we say so
         super().__init__(
@@ -194,17 +215,20 @@ class load_exp_trials():
     def run(self):
 
         loading_text = visual.TextStim(
-            self.win,
-            text="Please wait… loading trials",
-            height=0.05
+            self.session.win,
+            text="Loading trials - please wait for a moment, this may take a while.",
+            height=30
         )
 
         loading_text.draw()
-        self.win.flip()
+        self.session.win.flip()
 
         self.session.create_exp_trials(mml_distances=self.session.distances)
 
-        self.win.flip()  # clear screen
+        # Clear key buffer
+        keys = event.getKeys()
+
+        self.session.win.flip()  # clear screen
         
 
 class CascExpSession(Session):
@@ -230,17 +254,15 @@ class CascExpSession(Session):
             if "inst" in trial_params.get("trial_identifier"):
             
                 if trial_params["trial_type"] == "text":
-                    text_id = trial_params.get("content")
-                    text = exp_texts[text_id]
 
                     trial = TextTrial(
                             session=self,
                             trial_nr=0,                             # change!!!
-                            text=text, 
+                            exp_texts=exp_texts, 
                             params=trial_params
                             )
                     self.inst_trials.append(trial)
-                    
+
                 if trial_params["trial_type"] == "stim":
                     trial = CascTrial(
                         session=self,
@@ -257,21 +279,98 @@ class CascExpSession(Session):
     def create_exp_trials(self, mml_distances = None):
         """ Creates experiment trials (ideally before running your session!) """
             
-        self.trial_names = list(exp_params.keys())
+        #self.trial_names = list(exp_params.keys())
 
-        for name in self.trial_names:
-            trial_params = exp_params[name]
+        self.trial_params_list = list(exp_params.values())
+
+        # create blocks
+        # some code to create counterbalances conditions - takes all trials that 
+        
+
+        # condition combinations
+        
+        vals_side = np.repeat([0, -1], 2)
+
+        vals_disamb = np.repeat(["hor", "ver", None], 2)
+
+        timings = [240, 360, 480]
+
+        combinations = [(x, y, z) for x in vals_side for y in vals_disamb for z in timings]
+
+        #combinations = [(x, y) for x in vals_side for y in vals_disamb]
+
+
+        np.random.shuffle(combinations)
+
+        self.block_trials = []
+
+        for trial in self.trial_params_list :
+
+            if "block" in trial.get("trial_identifier"):
+
+
+                self.block_trials.append(trial)
+
+                
+        self.block_trials_expanded = []
+
+        counter = 0
+
+        for combination in combinations:
+            for block_trial in self.block_trials:
+
+                bt = copy.deepcopy(block_trial)
+
+                if "amb1" in bt["trial_identifier"]:
+                    bt["trial_duration"] = combination[2]
+
+                if "disamb" in bt["trial_identifier"]:
+                    trial_objects = bt["trial_objects"]
+                    for obj in trial_objects:
+                        trial_objects[obj]["disamb"] = combination[1]
+
+                elif "induce_casc" in bt["trial_identifier"]:
+                    trial_objects = bt["trial_objects"]
+                    names = list(trial_objects.keys())
+
+                    if combination[1] == "hor":
+                        cue = "ver"
+                    elif combination[1] == "ver":
+                        cue = "hor"
+                    else:
+                        cue = None
+
+                    trial_objects[names[combination[0]]]["disamb"] = cue
+
+                bt["trial_identifier"] += "_" + str(counter)
+
+                self.block_trials_expanded.append(bt)
+
+            counter += 1
+        
+
+        # remove block trials from original list 
+
+        key_name = "trial_identifier"
+        pattern = "block"
+
+        self.trial_params_list  = [d for d in self.trial_params_list  if pattern not in str(d.get(key_name, ""))]
+
+        self.thank_you = self.trial_params_list.pop()
+
+        self.trial_params_list = self.trial_params_list + self.block_trials_expanded + [self.thank_you]
+
+
+        for trial_params in self.trial_params_list:
 
             if "exp" in trial_params.get("trial_identifier"):
 
                 if trial_params["trial_type"] == "text":
-                    text_id = trial_params.get("content")
-                    text = exp_texts[text_id]
 
                     trial = TextTrial(
                             session=self,
                             trial_nr=0,
-                            text=text, 
+                            exp_texts=exp_texts, 
                             params=trial_params
                             )
                     self.exp_trials.append(trial)
@@ -280,9 +379,9 @@ class CascExpSession(Session):
 
                     trial = CascTrial(
                         session=self,
-                        trial_nr=name,
+                        trial_nr=trial_params.get("trial_identifier"),
                         phase_durations=tuple([1]*trial_params["trial_duration"]),
-                        parameters= {'condition': name},
+                        parameters= {'condition': trial_params.get("trial_identifier")},
                         load_next_during_phase=None,
                         verbose=False, 
                         trial_params = trial_params, 
@@ -290,6 +389,9 @@ class CascExpSession(Session):
                     )
 
                     self.exp_trials.append(trial)
+
+
+                
             
     def run(self):
 
