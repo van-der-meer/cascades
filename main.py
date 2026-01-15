@@ -1,0 +1,455 @@
+import copy
+import numpy as np
+from functions_new import *
+from psychopy import visual, core, event  
+from exptools2.core import Trial, Session
+
+
+exp_folder_path = "experiment_params/v2_cycles_based"
+
+exp_params, exp_texts = open_params(exp_folder_path)
+
+
+class MQTrial(Trial):
+    """
+    Displays multiple bistable motion quartets simultaneously.
+    Each phase corresponds to one alternation (horizontal <-> vertical).
+    """
+
+    def __init__(
+        self,
+        session,
+        trial_nr,
+        phase_durations,
+        params, 
+        mml_distances = None
+    ):
+
+
+        super().__init__(
+            session=session,
+            trial_nr=trial_nr,
+            phase_durations=phase_durations,
+            phase_names=["alternation"] * len(phase_durations), 
+            timing="seconds"
+        )
+
+        self.params = params
+
+        self.button = params.get("continue")
+        self.mml = params.get("mml")
+
+        self.mml_distances = mml_distances
+
+        self.create_trial()
+
+    def create_trial(self):
+        """Create dot stimuli for all quartets."""
+
+        self.quartets = []
+
+        for mq_pars in self.params["mqs"].values():
+
+            if isinstance(self.mml_distances, np.ndarray):
+                mq_pars["dist_hor_start"] = self.mml_distances[0]
+                mq_pars["dist_ver_start"] = self.mml_distances[1]
+
+            self.coords = mq(mq_pars)
+            self.quartets.append(pad_frames(self.coords, self.params))
+
+        self.concatenated = np.concatenate(self.quartets, axis=1)
+
+        self.stims = []
+
+        for frame in self.concatenated:
+            coords = frame[~np.isnan(frame).all(axis=1)]
+
+            if coords.shape[0] == 0:
+                # Create "empty" stim by putting a single element off-screen
+                coords = np.array([[9999, 9999]])
+                n_elements = 1
+            else:
+                n_elements = coords.shape[0]
+
+            self.stims.append(
+                visual.ElementArrayStim(
+                    win=self.session.win,
+                    units='pix',
+                    nElements=n_elements,
+                    xys=coords,
+                    sizes=10,            # size of each element (scalar or list)
+                    sfs=0,               # spatial frequency 0 = filled circles
+                    elementTex=None,     # use disk instead of texture
+                    elementMask='circle',
+                    colors=[1, 1, 1],     # single RGB color for all dots
+                    colorSpace='rgb'
+                )
+            )
+
+    
+    def draw(self):
+        """Draw stimuli for the current phase (one frame)."""
+
+        visual.TextStim(
+                win=self.session.win,
+                text="+",
+                color='white',
+                height=20,
+                pos=[0, 0]
+            ).draw()
+
+        frame_idx = self.phase
+
+        if frame_idx < len(self.stims):
+            self.stims[frame_idx].draw()
+
+        if self.button: 
+            if self.last_resp == self.button:
+
+                if self.mml:
+                    self.session.output.append(self.concatenated[frame_idx])
+
+                self.stop_trial()
+
+
+class TextTrial(Trial):
+    """A trial that shows some text and waits for space press."""
+
+    def __init__(self, session, trial_nr, params):
+        # This trial has one phase of arbitrary length (we ignore duration)
+        super().__init__(
+            session=session,
+            trial_nr=trial_nr,
+            phase_durations=[params.get("duration", float("inf"))],  # run until space is pressed
+            phase_names=["text_phase"],
+            timing="seconds"
+        )
+
+        self.params = params
+
+        self.text_stims = []
+
+        self.button = self.params.get("continue")
+
+        self.create_trial()
+
+
+    def create_trial(self):
+        """Create the PsychoPy TextStim."""
+
+        for element in self.params["texts"].values():
+
+            text = exp_texts[element["content"]]
+
+            self.text_stims.append(visual.TextStim(
+                win=self.session.win,
+                text=text,
+                color='white',
+                height=element["size"],
+                pos=element["pos"]
+            ))
+            
+
+    def draw(self):
+        """Draw text and wait for space bar."""
+
+        for text_stim in self.text_stims:
+            text_stim.draw()
+
+        # Check for button press
+        if self.button: 
+            if self.last_resp == self.button:
+                self.stop_trial()
+
+    
+# --------------------------------------------------
+# Session class
+# --------------------------------------------------
+
+class CascExpSession(Session):
+
+    def __init__(self, output_str, output_dir, settings_file):
+        super().__init__(output_str, output_dir, settings_file)
+
+        self.inst_trials = []
+        self.exp_trials = []
+        self.output = []
+        self.trial_params_output = []
+        self.trial_counter = 0
+
+    def create_inst_mml_trials(self):
+        """Create all trials before running the experiment."""
+
+        self.trial_names = list(exp_params)
+
+        for trial in self.trial_names:
+
+            self.trial_params = exp_params[trial]
+
+            if "mml" in trial:
+
+                n_mml_reps = 4          # should be n / 2
+
+                base_distance = 100
+                mml_dist = 60
+                mml_multipliers = [-1, 1] * n_mml_reps 
+                mml_durs = [10, 12, 14, 16] * 2  # should be n
+                mml_idx = np.arange(0, n_mml_reps * 2)
+
+                np.random.shuffle(mml_idx)
+
+                phase_durations = [1/self.trial_params["freq"]] * self.trial_params["len_trial"] * 2 
+
+                for idx in mml_idx:
+
+                    if mml_multipliers[idx] == -1:
+                        init_pos = "lu", 
+                    else:
+                        init_pos = "ru", 
+                    
+                    mq_idx = list(self.trial_params["mqs"])[0]
+
+                    mq_params = self.trial_params["mqs"][mq_idx]
+
+                    self.trial_params["len_trial"] = mml_durs[idx]
+
+                    mq_params["dist_hor_start"] = base_distance + mml_multipliers[idx] * mml_dist
+                    mq_params["dist_ver_start"] = base_distance - mml_multipliers[idx] * mml_dist
+                    mq_params["dist_hor_stop"] = base_distance - mml_multipliers[idx] * mml_dist
+                    mq_params["dist_ver_stop"] = base_distance + mml_multipliers[idx] * mml_dist
+                    mq_params["cycles"] = mml_durs[idx]
+
+                    mq_params["init_pos"] = init_pos
+
+                    self.trial_params["mqs"][mq_idx] = mq_params
+
+                    phase_durations = [1/self.trial_params["freq"]] * self.trial_params["len_trial"] * 2 
+
+                    self.inst_trials.append(
+                        MQTrial(
+                            session=self,
+                            trial_nr=self.trial_counter,
+                            phase_durations=phase_durations,
+                            params=self.trial_params)
+                            )
+                    
+                    self.trial_params_output.append({self.trial_counter: self.trial_params})
+                    
+                    self.trial_counter += 1
+                    
+
+
+            elif "inst" in trial and self.trial_params["trial_type"] == "text":
+                self.inst_trials.append(
+                     TextTrial(self, trial_nr=self.trial_counter, params=self.trial_params)
+                )
+
+                self.trial_params_output.append({self.trial_counter: self.trial_params})
+
+                self.trial_counter += 1
+
+            elif "inst" in trial and self.trial_params["trial_type"] == "stim":
+
+                phase_durations = [1/self.trial_params["freq"]] * self.trial_params["len_trial"] * 2 
+
+                self.inst_trials.append(
+                    MQTrial(
+                        session=self,
+                        trial_nr=self.trial_counter,
+                        phase_durations=phase_durations,
+                        params=self.trial_params)
+                        )
+                
+                self.trial_params_output.append({self.trial_counter: self.trial_params})
+
+                self.trial_counter += 1
+
+        output_name = self.output_dir + "/" + self.output_str + "_inst_params.json"
+
+        with open(output_name, "w") as f:
+            json.dump(self.trial_params_output, f, indent=4)
+
+    def create_exp_trials(self):
+        """Create all trials before running the experiment."""
+
+
+        self.trial_names = list(exp_params)
+
+        mml_distances = np.mean(np.abs(self.output), axis = 0)[0]
+
+        mml_distances = mml_distances * 1 # scale this up or down a bit 
+
+        for trial in self.trial_names:
+
+            self.trial_params = exp_params[trial]
+
+
+            if "main_exp" in trial: 
+
+                # vars 
+
+                total_dur = 20
+
+                vals_side = np.repeat([0, -1], 2)
+
+                vals_disamb = np.repeat(["hor", "ver", None], 2)
+
+                timings = [4, 8]
+
+                combinations = [(x, y, z) for x in vals_side for y in vals_disamb for z in timings]
+
+                np.random.shuffle(combinations)
+
+                for combination in combinations: 
+
+                    trial_copy = copy.deepcopy(self.trial_params)
+
+                    trial_copy["len_trial"] = total_dur
+
+                    mq_idxs = list(self.trial_params["mqs"])
+
+                    prime_idxs = np.where(["prime" in x for x in mq_idxs])[0]
+                    amb1_idxs = np.where(["amb1" in x for x in mq_idxs])[0]
+                    cue_idxs = np.where(["cue" in x for x in mq_idxs])[0]
+                    amb2_idxs = np.where(["amb2" in x for x in mq_idxs])[0]
+
+                    amb_1_dur = combination[2]
+
+                    cue_start = amb_1_dur + 3 #1 cycle wait, 2 cycles prime
+
+                    cue_dur = 3
+
+                    amb_2_start = cue_start + cue_dur
+
+                    amb_2_dur = total_dur - amb_2_start
+
+                    amb_2_dur = 10
+
+                    total_dur = amb_2_start + amb_2_dur
+
+
+
+                    if combination[1] == "hor":
+                        cue_dir = "ver"
+                    elif combination[1] == "ver":
+                        cue_dir = "hor"
+                    else:
+                        cue_dir = None
+
+
+                    for prime in prime_idxs:
+                        trial_copy["mqs"][mq_idxs[prime]]["disamb"] = combination[1]
+
+                    for amb1_idx in amb1_idxs:
+                        trial_copy["mqs"][mq_idxs[amb1_idx]]["cycles"] = amb_1_dur
+
+                    for cue_idx in cue_idxs:
+                        trial_copy["mqs"][mq_idxs[cue_idx]]["start_cycle"] = cue_start
+                        trial_copy["mqs"][mq_idxs[cue_idx]]["cycles"] = cue_dur
+                        
+                    trial_copy["mqs"][mq_idxs[cue_idxs[combination[0]]]]["disamb"] = cue_dir
+
+                    for amb2_idx in amb2_idxs:
+                        trial_copy["mqs"][mq_idxs[amb2_idx]]["start_cycle"] = amb_2_start
+                        trial_copy["mqs"][mq_idxs[amb2_idx]]["cycles"] = amb_2_dur
+
+
+
+                    phase_durations = [1/trial_copy["freq"]] * trial_copy["len_trial"] * 2 
+
+                    self.exp_trials.append(
+                        MQTrial(
+                            session=self,
+                            trial_nr=self.trial_counter,
+                            phase_durations=phase_durations,
+                            params=trial_copy, 
+                            mml_distances=mml_distances)
+                            )
+                    
+                    self.trial_params_output.append({self.trial_counter: trial_copy})
+
+                    self.trial_counter += 1
+
+
+            elif "exp" in trial and self.trial_params["trial_type"] == "text":
+                self.exp_trials.append(
+                     TextTrial(self, trial_nr=self.trial_counter, params=self.trial_params)
+                )
+
+                self.trial_params_output.append({self.trial_counter: self.trial_params})
+
+                self.trial_counter += 1
+
+            elif "exp" in trial and self.trial_params["trial_type"] == "stim":
+
+                phase_durations = [1/self.trial_params["freq"]] * self.trial_params["len_trial"] * 2 
+
+                self.exp_trials.append(
+                    MQTrial(
+                        session=self,
+                        trial_nr=self.trial_counter,
+                        phase_durations=phase_durations,
+                        params=self.trial_params, 
+                        mml_distances=mml_distances)
+                        )
+                
+                self.trial_params_output.append({self.trial_counter: self.trial_params})
+
+                self.trial_counter += 1
+
+        output_name = self.output_dir + "/" + self.output_str + "_exp_params.json"
+
+        self.trial_params_output.append({"mml_results": list(mml_distances)})
+
+        with open(output_name, "w") as f:
+            json.dump(self.trial_params_output, f, indent=4)
+
+    def show_loading_screen(self):
+
+        """Display a loading screen immediately."""
+        self.loading_text = visual.TextStim(
+            win=self.win,
+            text="Preparing experiment...\nPlease wait",
+            color="white",
+            height=30
+        )
+
+        self.loading_text.draw()
+        self.win.flip()
+
+        self.create_exp_trials()
+
+        keys = event.getKeys()
+
+        self.win.flip()
+        core.wait(0.01)  # ensures flip actually happens
+
+
+    def run(self):
+
+        self.start_experiment()
+
+        
+
+        self.create_inst_mml_trials()
+
+        for trial in self.inst_trials:
+            trial.run()
+
+        self.show_loading_screen()
+
+        for trial in self.exp_trials:
+            trial.run()
+
+        self.close()
+
+
+# --------------------------------------------------
+# Run experiment
+# --------------------------------------------------
+
+subject_id, subject_dir = create_subject_dir() #create subject directory for data storage
+
+if __name__ == '__main__':
+    my_sess = CascExpSession(subject_id, subject_dir, 'settings.yml')
+    my_sess.run()

@@ -1,0 +1,15 @@
+{
+  "inst_welcome_text_1": "Welcome to this experiment. \n \n Please read the following instructions carefully.", 
+  "space_to_cont": "Press space to continue.", 
+  "inst_text_ver_1": "In the next screen, you will see two dots jumping up and down",
+  "inst_text_hor_1": "Now they will jump from left to right.",
+  "inst_text_amb_1": "If they jump at different times, you can see either up-down or left-right motion.",
+  "inst_text_mml_1": "In the next screen, the distance of the dots will vary over time",
+  "inst_text_mml_2": "If you watch closely, you will notice that first, the dots seem to jump up ",
+  "inst_text_mml_3": "Testtesttest",
+  "exp_text_1": "Now its time to start with the actual experiment.",
+  "exp_text_2": "Now its time to start with the actual experiment.",
+  "exp_text_start_trial": "Please press space as soon as the center one changes direction.",
+  "exp_break_text_1": "Time for a short break. \n Press space to continue when you are ready.",
+  "exp_complete_text": "Thank you for participating! \n Please press SPACE to finish and inform the experimenter about the completion."
+}

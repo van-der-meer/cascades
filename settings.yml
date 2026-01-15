@@ -2,7 +2,7 @@ window:
   units: pix
   size: [1000, 800]  # macOS often renders at 2x resolution – this is the "scaled" default
   color: [0, 0, 0]
-  fullscr: True  # or False for debugging
+  fullscr: False  # or False for debugging
 
 monitor:
   name: monitor_lab
