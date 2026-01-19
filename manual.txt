@@ -4,6 +4,8 @@
 
 open terminal
 
+paste: cd C:\Users\topuser\Documents\Daniel\cascades
+
 paste: C:\Users\topuser\Documents\Daniel\cascades\.venv\Scripts\Activate.ps1
 
 paste: python c:\Users\topuser\Documents\Daniel\cascades\run_exptools.py
