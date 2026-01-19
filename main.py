@@ -473,7 +473,7 @@ class CascExpSession(Session):
         """Display a loading screen immediately."""
         self.loading_text = visual.TextStim(
             win=self.win,
-            text="Preparing experiment...\nPlease wait",
+            text="Preparing experiment. This can take a moment. \nPlease wait",
             color="white",
             height=30
         )
