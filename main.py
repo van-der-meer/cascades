@@ -5,7 +5,7 @@ from psychopy import visual, core, event
 from exptools2.core import Trial, Session
 
 
-exp_folder_path = "experiment_params/v2_cycles_based"
+exp_folder_path = "experiment_params/v3_cycles_based"
 
 exp_params, exp_texts = open_params(exp_folder_path)
 
@@ -38,6 +38,7 @@ class MQTrial(Trial):
 
         self.button = params.get("continue")
         self.mml = params.get("mml")
+        self.fixation = params.get("fixation", False)
 
         self.mml_distances = mml_distances
 
@@ -90,13 +91,14 @@ class MQTrial(Trial):
     def draw(self):
         """Draw stimuli for the current phase (one frame)."""
 
-        visual.TextStim(
-                win=self.session.win,
-                text="+",
-                color='white',
-                height=20,
-                pos=[0, 0]
-            ).draw()
+        if self.fixation:
+            visual.TextStim(
+                    win=self.session.win,
+                    text="+",
+                    color='white',
+                    height=20,
+                    pos=[0, 0]
+                ).draw()
 
         frame_idx = self.phase
 
@@ -175,7 +177,7 @@ class CascExpSession(Session):
         self.exp_trials = []
         self.output = []
         self.trial_params_output = []
-        self.trial_counter = 0
+        self.trial_counter = 1
 
     def create_inst_mml_trials(self):
         """Create all trials before running the experiment."""
@@ -193,7 +195,7 @@ class CascExpSession(Session):
                 base_distance = 100
                 mml_dist = 60
                 mml_multipliers = [-1, 1] * n_mml_reps 
-                mml_durs = [10, 12, 14, 16] * 2  # should be n
+                mml_durs = [14, 16, 18, 20] * 2  # should be n
                 mml_idx = np.arange(0, n_mml_reps * 2)
 
                 np.random.shuffle(mml_idx)
@@ -279,6 +281,9 @@ class CascExpSession(Session):
 
         mml_distances = mml_distances * 1 # scale this up or down a bit 
 
+
+        self.break_text_trial_params = exp_params["break_text"] # unelegant... 
+
         for trial in self.trial_names:
 
             self.trial_params = exp_params[trial]
@@ -286,89 +291,148 @@ class CascExpSession(Session):
 
             if "main_exp" in trial: 
 
+                reps_main_block = 20
+
                 # vars 
 
-                total_dur = 20
+                vals_side = [0, -1]
 
-                vals_side = np.repeat([0, -1], 2)
+                vals_disamb = ["hor", "ver", None, None]
 
-                vals_disamb = np.repeat(["hor", "ver", None], 2)
+                cue_present = [True, False]
 
-                timings = [4, 8]
+                timings = [4, 6, 8, 10]
 
-                combinations = [(x, y, z) for x in vals_side for y in vals_disamb for z in timings]
+                #combinations = [(w, x, y, z) for w in vals_side for x in vals_disamb for y in timings for z in cue_present]
 
-                np.random.shuffle(combinations)
+                # should balance classes by preventing too many conditions without prime
+                combinations = [
+                    (w, x, y, z)
+                    for w in vals_side
+                    for x in vals_disamb
+                    for y in timings
+                    for z in cue_present
+                    if not (
+                        (x is None and z is True) or
+                        (x is None and z is False and y in [4, 6]) or
+                        (x == "hor" and z is False and (w == 0 or y in [8, 10])) or
+                        (x == "ver" and z is False and (w == 0 or y in [8, 10])) or
+                        (x is None and w == 0) 
+                    )
+                ]
 
-                for combination in combinations: 
+                for rep in range(reps_main_block):
 
-                    trial_copy = copy.deepcopy(self.trial_params)
+                    np.random.shuffle(combinations)
 
-                    trial_copy["len_trial"] = total_dur
+                    for combination in combinations: 
 
-                    mq_idxs = list(self.trial_params["mqs"])
+                        trial_copy = copy.deepcopy(self.trial_params)
 
-                    prime_idxs = np.where(["prime" in x for x in mq_idxs])[0]
-                    amb1_idxs = np.where(["amb1" in x for x in mq_idxs])[0]
-                    cue_idxs = np.where(["cue" in x for x in mq_idxs])[0]
-                    amb2_idxs = np.where(["amb2" in x for x in mq_idxs])[0]
+                        if combination[0] == 0:
+                            side = "left"
+                        else: 
+                            side = "right"
 
-                    amb_1_dur = combination[2]
+                        if combination[1] == "hor":
+                            disamb = "hor"
+                        elif combination[1] == "ver":
+                            disamb = "ver"
+                        else: 
+                            disamb = "none"
 
-                    cue_start = amb_1_dur + 3 #1 cycle wait, 2 cycles prime
-
-                    cue_dur = 3
-
-                    amb_2_start = cue_start + cue_dur
-
-                    amb_2_dur = total_dur - amb_2_start
-
-                    amb_2_dur = 10
-
-                    total_dur = amb_2_start + amb_2_dur
-
-
-
-                    if combination[1] == "hor":
-                        cue_dir = "ver"
-                    elif combination[1] == "ver":
-                        cue_dir = "hor"
-                    else:
-                        cue_dir = None
-
-
-                    for prime in prime_idxs:
-                        trial_copy["mqs"][mq_idxs[prime]]["disamb"] = combination[1]
-
-                    for amb1_idx in amb1_idxs:
-                        trial_copy["mqs"][mq_idxs[amb1_idx]]["cycles"] = amb_1_dur
-
-                    for cue_idx in cue_idxs:
-                        trial_copy["mqs"][mq_idxs[cue_idx]]["start_cycle"] = cue_start
-                        trial_copy["mqs"][mq_idxs[cue_idx]]["cycles"] = cue_dur
+                        trial_copy["params"] = {"side": side, 
+                                                "disamb": disamb, 
+                                                "cue_present": combination[3], 
+                                                "cue_onset": combination[2], 
+                                                "trial_nr": self.trial_counter}
                         
-                    trial_copy["mqs"][mq_idxs[cue_idxs[combination[0]]]]["disamb"] = cue_dir
+                        trial_copy["trial_nr"] = self.trial_counter
 
-                    for amb2_idx in amb2_idxs:
-                        trial_copy["mqs"][mq_idxs[amb2_idx]]["start_cycle"] = amb_2_start
-                        trial_copy["mqs"][mq_idxs[amb2_idx]]["cycles"] = amb_2_dur
+                        mq_idxs = list(self.trial_params["mqs"])
+
+                        prime_idxs = np.where(["prime" in x for x in mq_idxs])[0]
+                        amb1_idxs = np.where(["amb1" in x for x in mq_idxs])[0]
+                        cue_idxs = np.where(["cue" in x for x in mq_idxs])[0]
+                        amb2_idxs = np.where(["amb2" in x for x in mq_idxs])[0]
+
+                        prime_start = 4
+                        cycles_prime = 2
+                        amb_1_start = prime_start + cycles_prime
+
+                        amb_1_dur = combination[2]
+
+                        cue_start = amb_1_dur + amb_1_start # 2 cycles prime
+
+                        cue_dur = 4
+
+                        amb_2_start = cue_start + cue_dur
+
+                        #amb_2_dur = total_dur - amb_2_start
+
+                        amb_2_dur = 14
+
+                        total_dur = amb_2_start + amb_2_dur
+
+                        trial_copy["len_trial"] = total_dur
 
 
 
-                    phase_durations = [1/trial_copy["freq"]] * trial_copy["len_trial"] * 2 
+                        if combination[1] == "hor":
+                            cue_dir = "ver"
+                        elif combination[1] == "ver":
+                            cue_dir = "hor"
+                        else:
+                            cue_dir = None
 
-                    self.exp_trials.append(
-                        MQTrial(
-                            session=self,
-                            trial_nr=self.trial_counter,
-                            phase_durations=phase_durations,
-                            params=trial_copy, 
-                            mml_distances=mml_distances)
-                            )
-                    
-                    self.trial_params_output.append({self.trial_counter: trial_copy})
 
-                    self.trial_counter += 1
+                        for prime in prime_idxs:
+                            trial_copy["mqs"][mq_idxs[prime]]["start_cycle"] = prime_start
+                            trial_copy["mqs"][mq_idxs[prime]]["cycles"] = cycles_prime
+                            trial_copy["mqs"][mq_idxs[prime]]["disamb"] = combination[1]
+
+                        for amb1_idx in amb1_idxs:
+                            trial_copy["mqs"][mq_idxs[amb1_idx]]["start_cycle"] = amb_1_start
+                            trial_copy["mqs"][mq_idxs[amb1_idx]]["cycles"] = amb_1_dur
+
+                        for cue_idx in cue_idxs:
+                            trial_copy["mqs"][mq_idxs[cue_idx]]["start_cycle"] = cue_start
+                            trial_copy["mqs"][mq_idxs[cue_idx]]["cycles"] = cue_dur
+                        
+                        if combination[3]: 
+                            trial_copy["mqs"][mq_idxs[cue_idxs[combination[0]]]]["disamb"] = cue_dir
+                        else: 
+                            trial_copy["mqs"][mq_idxs[cue_idxs[combination[0]]]]["disamb"] = None
+
+                        for amb2_idx in amb2_idxs:
+                            trial_copy["mqs"][mq_idxs[amb2_idx]]["start_cycle"] = amb_2_start
+                            trial_copy["mqs"][mq_idxs[amb2_idx]]["cycles"] = amb_2_dur
+
+
+
+                        phase_durations = [1/trial_copy["freq"]] * trial_copy["len_trial"] * 2 
+
+                        self.exp_trials.append(
+                            MQTrial(
+                                session=self,
+                                trial_nr=self.trial_counter,
+                                phase_durations=phase_durations,
+                                params=trial_copy, 
+                                mml_distances=mml_distances)
+                                )
+                        
+                        self.trial_params_output.append({self.trial_counter: trial_copy})
+                        self.trial_counter += 1
+
+                    if rep < (reps_main_block-1):
+                        self.exp_trials.append(
+                            TextTrial(self, trial_nr=self.trial_counter, params=self.break_text_trial_params)
+                        )
+
+                        self.trial_params_output.append({self.trial_counter: self.break_text_trial_params})
+                        self.trial_counter += 1
+
+
 
 
             elif "exp" in trial and self.trial_params["trial_type"] == "text":
