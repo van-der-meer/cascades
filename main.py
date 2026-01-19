@@ -291,7 +291,7 @@ class CascExpSession(Session):
 
             if "main_exp" in trial: 
 
-                reps_main_block = 20
+                reps_main_block = 10
 
                 # vars 
 
