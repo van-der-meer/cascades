@@ -394,6 +394,7 @@ exp_expl_1:
   trial_identifier: "exp_expl_1"    # exp 
   len_trial: 10
   trial_type: "stim"
+  fixation: True
   freq: 5         # frequency of alternations 
   mqs: {
     mq1_amb1: {"cycles": 10,      # nr of cycles (one cycle is one of each positions)
@@ -530,6 +531,7 @@ exp_expl_2:
   trial_identifier: "exp_expl_2"    # exp 
   len_trial: 10
   trial_type: "stim"
+  fixation: True
   freq: 5         # frequency of alternations 
   mqs: {
     mq1_prime: {"cycles": 2,      # nr of cycles (one cycle is one of each positions)
