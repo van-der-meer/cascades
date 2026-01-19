@@ -340,12 +340,6 @@ class CascExpSession(Session):
                             disamb = "ver"
                         else: 
                             disamb = "none"
-
-                        trial_copy["params"] = {"side": side, 
-                                                "disamb": disamb, 
-                                                "cue_present": combination[3], 
-                                                "cue_onset": combination[2], 
-                                                "trial_nr": self.trial_counter}
                         
                         trial_copy["trial_nr"] = self.trial_counter
 
@@ -358,6 +352,7 @@ class CascExpSession(Session):
 
                         prime_start = 4
                         cycles_prime = 2
+
                         amb_1_start = prime_start + cycles_prime
 
                         amb_1_dur = combination[2]
@@ -375,6 +370,20 @@ class CascExpSession(Session):
                         total_dur = amb_2_start + amb_2_dur
 
                         trial_copy["len_trial"] = total_dur
+
+
+                        trial_copy["params"] = {"side": side, 
+                                                "disamb": disamb, 
+                                                "cue_present": combination[3], 
+                                                "cue_onset": combination[2], 
+                                                "trial_nr": self.trial_counter, 
+                                                "prime_start": prime_start, 
+                                                "cycles_prime": cycles_prime, 
+                                                "amb_1_start": amb_1_start,
+                                                "amb_2_start": amb_2_start,
+                                                "amb_2_dur": amb_2_dur,
+                                                "cue_start": cue_start,
+                                                "cue_dur": cue_dur}
 
 
 
