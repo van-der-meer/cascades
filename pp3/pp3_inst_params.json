@@ -1,0 +1,654 @@
+[
+    {
+        "1": {
+            "trial_identifier": "inst_welcome_text_1",
+            "trial_type": "text",
+            "continue": "space",
+            "texts": {
+                "text": {
+                    "content": "inst_welcome_text_1",
+                    "pos": [
+                        0,
+                        0
+                    ],
+                    "size": 30
+                },
+                "continue_with_space": {
+                    "content": "space_to_cont",
+                    "pos": [
+                        0,
+                        -200
+                    ],
+                    "size": 25
+                }
+            }
+        }
+    },
+    {
+        "2": {
+            "trial_identifier": "inst_text_ver_1",
+            "trial_type": "text",
+            "continue": "space",
+            "texts": {
+                "text": {
+                    "content": "inst_text_ver_1",
+                    "pos": [
+                        0,
+                        0
+                    ],
+                    "size": 30
+                },
+                "continue_with_space": {
+                    "content": "space_to_cont",
+                    "pos": [
+                        0,
+                        -200
+                    ],
+                    "size": 25
+                }
+            }
+        }
+    },
+    {
+        "3": {
+            "trial_identifier": "inst_up_down_1",
+            "len_trial": 10,
+            "trial_type": "stim",
+            "freq": 5,
+            "mqs": {
+                "mq1": {
+                    "type": "mq",
+                    "cycles": 10,
+                    "center": [
+                        0,
+                        0
+                    ],
+                    "dot_size": 10,
+                    "dist_hor_start": 80,
+                    "dist_ver_start": 100,
+                    "init_pos": "ru",
+                    "start_cycle": 0,
+                    "disamb": "ver",
+                    "elements_per_frame": 2
+                }
+            }
+        }
+    },
+    {
+        "4": {
+            "trial_identifier": "inst_text_hor_1",
+            "trial_type": "text",
+            "continue": "space",
+            "texts": {
+                "text": {
+                    "content": "inst_text_hor_1",
+                    "pos": [
+                        0,
+                        0
+                    ],
+                    "size": 30
+                },
+                "continue_with_space": {
+                    "content": "space_to_cont",
+                    "pos": [
+                        0,
+                        -200
+                    ],
+                    "size": 25
+                }
+            }
+        }
+    },
+    {
+        "5": {
+            "trial_identifier": "inst_left_right_1",
+            "len_trial": 10,
+            "trial_type": "stim",
+            "freq": 5,
+            "mqs": {
+                "mq1": {
+                    "type": "mq",
+                    "cycles": 10,
+                    "center": [
+                        0,
+                        0
+                    ],
+                    "dot_size": 10,
+                    "dist_hor_start": 80,
+                    "dist_ver_start": 100,
+                    "init_pos": "ru",
+                    "start_cycle": 0,
+                    "disamb": "hor",
+                    "elements_per_frame": 2
+                }
+            }
+        }
+    },
+    {
+        "6": {
+            "trial_identifier": "inst_text_amb_1",
+            "trial_type": "text",
+            "continue": "space",
+            "texts": {
+                "text": {
+                    "content": "inst_text_amb_1",
+                    "pos": [
+                        0,
+                        0
+                    ],
+                    "size": 30
+                },
+                "continue_with_space": {
+                    "content": "space_to_cont",
+                    "pos": [
+                        0,
+                        -200
+                    ],
+                    "size": 25
+                }
+            }
+        }
+    },
+    {
+        "7": {
+            "trial_identifier": "inst_amb_1",
+            "len_trial": 10,
+            "trial_type": "stim",
+            "freq": 5,
+            "mqs": {
+                "mq1": {
+                    "type": "mq",
+                    "cycles": 10,
+                    "center": [
+                        0,
+                        0
+                    ],
+                    "dot_size": 10,
+                    "dist_hor_start": 80,
+                    "dist_ver_start": 100,
+                    "init_pos": "ru",
+                    "start_cycle": 0,
+                    "elements_per_frame": 2
+                }
+            }
+        }
+    },
+    {
+        "8": {
+            "trial_identifier": "inst_text_mml_1",
+            "trial_type": "text",
+            "continue": "space",
+            "texts": {
+                "text": {
+                    "content": "inst_text_mml_1",
+                    "pos": [
+                        0,
+                        0
+                    ],
+                    "size": 30
+                },
+                "continue_with_space": {
+                    "content": "space_to_cont",
+                    "pos": [
+                        0,
+                        -200
+                    ],
+                    "size": 25
+                }
+            }
+        }
+    },
+    {
+        "9": {
+            "trial_identifier": "inst_change_1",
+            "len_trial": 20,
+            "trial_type": "stim",
+            "freq": 5,
+            "mqs": {
+                "mq1": {
+                    "type": "mq",
+                    "cycles": 20,
+                    "center": [
+                        0,
+                        0
+                    ],
+                    "dot_size": 10,
+                    "dist_hor_start": 40,
+                    "dist_ver_start": 180,
+                    "dist_hor_stop": 180,
+                    "dist_ver_stop": 40,
+                    "init_pos": "ru",
+                    "start_cycle": 0,
+                    "elements_per_frame": 2
+                }
+            }
+        }
+    },
+    {
+        "10": {
+            "trial_identifier": "inst_text_mml_2",
+            "trial_type": "text",
+            "continue": "space",
+            "texts": {
+                "text": {
+                    "content": "inst_text_mml_2",
+                    "pos": [
+                        0,
+                        0
+                    ],
+                    "size": 30
+                },
+                "continue_with_space": {
+                    "content": "space_to_cont",
+                    "pos": [
+                        0,
+                        -200
+                    ],
+                    "size": 25
+                }
+            }
+        }
+    },
+    {
+        "11": {
+            "trial_identifier": "inst_change_2",
+            "len_trial": 20,
+            "trial_type": "stim",
+            "freq": 5,
+            "mqs": {
+                "mq1": {
+                    "type": "mq",
+                    "cycles": 20,
+                    "center": [
+                        0,
+                        0
+                    ],
+                    "dot_size": 10,
+                    "dist_hor_start": 40,
+                    "dist_ver_start": 180,
+                    "dist_hor_stop": 180,
+                    "dist_ver_stop": 40,
+                    "init_pos": "ru",
+                    "start_cycle": 0,
+                    "elements_per_frame": 2
+                }
+            }
+        }
+    },
+    {
+        "12": {
+            "trial_identifier": "inst_text_mml_3",
+            "trial_type": "text",
+            "continue": "space",
+            "texts": {
+                "text": {
+                    "content": "inst_text_mml_3",
+                    "pos": [
+                        0,
+                        0
+                    ],
+                    "size": 30
+                },
+                "continue_with_space": {
+                    "content": "space_to_cont",
+                    "pos": [
+                        0,
+                        -200
+                    ],
+                    "size": 25
+                }
+            }
+        }
+    },
+    {
+        "13": {
+            "trial_identifier": "inst_change_3",
+            "len_trial": 20,
+            "trial_type": "stim",
+            "freq": 5,
+            "mqs": {
+                "mq1": {
+                    "type": "mq",
+                    "cycles": 20,
+                    "center": [
+                        0,
+                        0
+                    ],
+                    "dot_size": 10,
+                    "dist_hor_start": 180,
+                    "dist_ver_start": 40,
+                    "dist_hor_stop": 40,
+                    "dist_ver_stop": 180,
+                    "init_pos": "ru",
+                    "start_cycle": 0,
+                    "elements_per_frame": 2
+                }
+            }
+        }
+    },
+    {
+        "14": {
+            "trial_identifier": "inst_text_mml_4",
+            "trial_type": "text",
+            "continue": "space",
+            "texts": {
+                "text": {
+                    "content": "inst_text_mml_4",
+                    "pos": [
+                        0,
+                        0
+                    ],
+                    "size": 30
+                },
+                "continue_with_space": {
+                    "content": "space_to_cont",
+                    "pos": [
+                        0,
+                        -200
+                    ],
+                    "size": 25
+                }
+            }
+        }
+    },
+    {
+        "15": {
+            "trial_identifier": "inst_change_4",
+            "len_trial": 20,
+            "trial_type": "stim",
+            "freq": 5,
+            "continue": "space",
+            "mqs": {
+                "mq1": {
+                    "type": "mq",
+                    "cycles": 20,
+                    "center": [
+                        0,
+                        0
+                    ],
+                    "dot_size": 10,
+                    "dist_hor_start": 180,
+                    "dist_ver_start": 40,
+                    "dist_hor_stop": 40,
+                    "dist_ver_stop": 180,
+                    "init_pos": "ru",
+                    "start_cycle": 0,
+                    "elements_per_frame": 2
+                }
+            }
+        }
+    },
+    {
+        "16": {
+            "trial_identifier": "inst_text_mml_5",
+            "trial_type": "text",
+            "continue": "space",
+            "texts": {
+                "text": {
+                    "content": "inst_text_mml_5",
+                    "pos": [
+                        0,
+                        0
+                    ],
+                    "size": 30
+                },
+                "continue_with_space": {
+                    "content": "space_to_cont",
+                    "pos": [
+                        0,
+                        -200
+                    ],
+                    "size": 25
+                }
+            }
+        }
+    },
+    {
+        "17": {
+            "trial_identifier": "inst_mml",
+            "len_trial": 14,
+            "continue": "space",
+            "mml": true,
+            "fixation": true,
+            "trial_type": "stim",
+            "freq": 5,
+            "mqs": {
+                "mq1": {
+                    "type": "mq",
+                    "cycles": 14,
+                    "center": [
+                        0,
+                        0
+                    ],
+                    "dot_size": 10,
+                    "dist_hor_start": 40,
+                    "dist_ver_start": 160,
+                    "dist_hor_stop": 160,
+                    "dist_ver_stop": 40,
+                    "init_pos": [
+                        "lu"
+                    ],
+                    "start_cycle": 2,
+                    "elements_per_frame": 2
+                }
+            }
+        }
+    },
+    {
+        "18": {
+            "trial_identifier": "inst_mml",
+            "len_trial": 14,
+            "continue": "space",
+            "mml": true,
+            "fixation": true,
+            "trial_type": "stim",
+            "freq": 5,
+            "mqs": {
+                "mq1": {
+                    "type": "mq",
+                    "cycles": 14,
+                    "center": [
+                        0,
+                        0
+                    ],
+                    "dot_size": 10,
+                    "dist_hor_start": 40,
+                    "dist_ver_start": 160,
+                    "dist_hor_stop": 160,
+                    "dist_ver_stop": 40,
+                    "init_pos": [
+                        "lu"
+                    ],
+                    "start_cycle": 2,
+                    "elements_per_frame": 2
+                }
+            }
+        }
+    },
+    {
+        "19": {
+            "trial_identifier": "inst_mml",
+            "len_trial": 14,
+            "continue": "space",
+            "mml": true,
+            "fixation": true,
+            "trial_type": "stim",
+            "freq": 5,
+            "mqs": {
+                "mq1": {
+                    "type": "mq",
+                    "cycles": 14,
+                    "center": [
+                        0,
+                        0
+                    ],
+                    "dot_size": 10,
+                    "dist_hor_start": 40,
+                    "dist_ver_start": 160,
+                    "dist_hor_stop": 160,
+                    "dist_ver_stop": 40,
+                    "init_pos": [
+                        "lu"
+                    ],
+                    "start_cycle": 2,
+                    "elements_per_frame": 2
+                }
+            }
+        }
+    },
+    {
+        "20": {
+            "trial_identifier": "inst_mml",
+            "len_trial": 14,
+            "continue": "space",
+            "mml": true,
+            "fixation": true,
+            "trial_type": "stim",
+            "freq": 5,
+            "mqs": {
+                "mq1": {
+                    "type": "mq",
+                    "cycles": 14,
+                    "center": [
+                        0,
+                        0
+                    ],
+                    "dot_size": 10,
+                    "dist_hor_start": 40,
+                    "dist_ver_start": 160,
+                    "dist_hor_stop": 160,
+                    "dist_ver_stop": 40,
+                    "init_pos": [
+                        "lu"
+                    ],
+                    "start_cycle": 2,
+                    "elements_per_frame": 2
+                }
+            }
+        }
+    },
+    {
+        "21": {
+            "trial_identifier": "inst_mml",
+            "len_trial": 14,
+            "continue": "space",
+            "mml": true,
+            "fixation": true,
+            "trial_type": "stim",
+            "freq": 5,
+            "mqs": {
+                "mq1": {
+                    "type": "mq",
+                    "cycles": 14,
+                    "center": [
+                        0,
+                        0
+                    ],
+                    "dot_size": 10,
+                    "dist_hor_start": 40,
+                    "dist_ver_start": 160,
+                    "dist_hor_stop": 160,
+                    "dist_ver_stop": 40,
+                    "init_pos": [
+                        "lu"
+                    ],
+                    "start_cycle": 2,
+                    "elements_per_frame": 2
+                }
+            }
+        }
+    },
+    {
+        "22": {
+            "trial_identifier": "inst_mml",
+            "len_trial": 14,
+            "continue": "space",
+            "mml": true,
+            "fixation": true,
+            "trial_type": "stim",
+            "freq": 5,
+            "mqs": {
+                "mq1": {
+                    "type": "mq",
+                    "cycles": 14,
+                    "center": [
+                        0,
+                        0
+                    ],
+                    "dot_size": 10,
+                    "dist_hor_start": 40,
+                    "dist_ver_start": 160,
+                    "dist_hor_stop": 160,
+                    "dist_ver_stop": 40,
+                    "init_pos": [
+                        "lu"
+                    ],
+                    "start_cycle": 2,
+                    "elements_per_frame": 2
+                }
+            }
+        }
+    },
+    {
+        "23": {
+            "trial_identifier": "inst_mml",
+            "len_trial": 14,
+            "continue": "space",
+            "mml": true,
+            "fixation": true,
+            "trial_type": "stim",
+            "freq": 5,
+            "mqs": {
+                "mq1": {
+                    "type": "mq",
+                    "cycles": 14,
+                    "center": [
+                        0,
+                        0
+                    ],
+                    "dot_size": 10,
+                    "dist_hor_start": 40,
+                    "dist_ver_start": 160,
+                    "dist_hor_stop": 160,
+                    "dist_ver_stop": 40,
+                    "init_pos": [
+                        "lu"
+                    ],
+                    "start_cycle": 2,
+                    "elements_per_frame": 2
+                }
+            }
+        }
+    },
+    {
+        "24": {
+            "trial_identifier": "inst_mml",
+            "len_trial": 14,
+            "continue": "space",
+            "mml": true,
+            "fixation": true,
+            "trial_type": "stim",
+            "freq": 5,
+            "mqs": {
+                "mq1": {
+                    "type": "mq",
+                    "cycles": 14,
+                    "center": [
+                        0,
+                        0
+                    ],
+                    "dot_size": 10,
+                    "dist_hor_start": 40,
+                    "dist_ver_start": 160,
+                    "dist_hor_stop": 160,
+                    "dist_ver_stop": 40,
+                    "init_pos": [
+                        "lu"
+                    ],
+                    "start_cycle": 2,
+                    "elements_per_frame": 2
+                }
+            }
+        }
+    }
+]
