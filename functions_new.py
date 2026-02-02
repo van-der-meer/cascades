@@ -125,12 +125,12 @@ def open_params(folder_path):
     return exp_params, exp_texts
 
 
-def create_subject_dir():
+def create_subject_dir(exp_folder, exp_version):
     # Create subject dir
     exit = False 
     while not exit:
         subject_id = input("Enter subject ID:")
-        subject_dir = "logs/" + subject_id
+        subject_dir = exp_folder + "/logs_" + exp_version + "/" + subject_id
 
         if os.path.isdir(subject_dir):
             print("Please enter a subject ID that has not been used yet or delete the corresponsing directory if not in use!")

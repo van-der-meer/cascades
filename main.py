@@ -5,7 +5,13 @@ from psychopy import visual, core, event
 from exptools2.core import Trial, Session
 
 
-exp_folder_path = "experiment_params/v3_cycles_based"
+#exp_version = "v3_cycles_based"
+exp_version = "v4_3mqs"
+
+exp_folder_path = "experiment_versions/" + exp_version
+
+
+
 
 exp_params, exp_texts = open_params(exp_folder_path)
 
@@ -105,6 +111,9 @@ class MQTrial(Trial):
         if frame_idx < len(self.stims):
             self.stims[frame_idx].draw()
 
+        if self.last_resp == "s":
+            self.stop_trial()
+
         if self.button: 
             if self.last_resp == self.button:
 
@@ -157,6 +166,9 @@ class TextTrial(Trial):
 
         for text_stim in self.text_stims:
             text_stim.draw()
+
+        if self.last_resp == "s":
+            self.stop_trial()
 
         # Check for button press
         if self.button: 
@@ -301,7 +313,7 @@ class CascExpSession(Session):
 
                 cue_present = [True, False]
 
-                timings = [4, 6, 8, 10]
+                timings = [4, 6, 8, 10] # cycles 
 
                 #combinations = [(w, x, y, z) for w in vals_side for x in vals_disamb for y in timings for z in cue_present]
 
@@ -375,7 +387,7 @@ class CascExpSession(Session):
                         trial_copy["params"] = {"side": side, 
                                                 "disamb": disamb, 
                                                 "cue_present": combination[3], 
-                                                "cue_onset": combination[2], 
+                                                "cue_delay": combination[2], 
                                                 "trial_nr": self.trial_counter, 
                                                 "prime_start": prime_start, 
                                                 "cycles_prime": cycles_prime, 
@@ -473,6 +485,7 @@ class CascExpSession(Session):
         output_name = self.output_dir + "/" + self.output_str + "_exp_params.json"
 
         self.trial_params_output.append({"mml_results": list(mml_distances)})
+        self.trial_params_output.append({"exp_version": exp_version})
 
         with open(output_name, "w") as f:
             json.dump(self.trial_params_output, f, indent=4)
@@ -521,7 +534,7 @@ class CascExpSession(Session):
 # Run experiment
 # --------------------------------------------------
 
-subject_id, subject_dir = create_subject_dir() #create subject directory for data storage
+subject_id, subject_dir = create_subject_dir(exp_folder_path, exp_version) #create subject directory for data storage
 
 if __name__ == '__main__':
     my_sess = CascExpSession(subject_id, subject_dir, 'settings.yml')

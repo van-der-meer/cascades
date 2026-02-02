@@ -13,14 +13,15 @@
   "exp_text_2": "You will now see an entire row of the jumping dots.",
   "exp_text_3": "You might notice how they all do the same thing - either all go up-down or all go left-right",
   "exp_text_4": "The first few jumps can determine how you see the dots moving for a certain time.",
-  "exp_text_5": "If all dots jump up and down a few times before they start jumping separately, it can influence the how you see them move.",
+  "exp_text_5": "If all dots jump up and down a few times before they start jumping separately, it can influence how you see them move.",
   "exp_text_6": "In the next screen you will likely see all dots move up and down for a while.",
   "exp_text_7": "Now you will likely see them move from left to right.",
   "exp_text_8": "At some point, the direction might switch spontaneously.",
   "exp_text_9": "From now, on focus on the center of the screen and try to keep your gaze on the fixation cross.",
   "exp_text_10": "Please pay attention which direction the dots are jumping. \n \n Whenever you notice a change in the direction of motion press SPACE.",
-  "exp_text_11": "Press SPACE only when you notice a change in the direction of motion.",
-  "exp_text_12": "When you are ready, press SPACE to start.",
+  "exp_text_11": "Note: Initially, the motion quartets may all jump up and down or from left to right for a short period. Afterwards they change to the alternating state. \n \n Please do NOT respond to this change! \n \n You should only respond if you perceive a change in the direction of motion in the later, alternating state!",
+  "exp_text_12": "Press SPACE only when you notice a change in the direction of motion.",
+  "exp_text_13": "When you are ready, press SPACE to start.",
   "exp_break_text_1": "Time for a short break. \n Press space to continue when you are ready.",
   "exp_complete_text": "Thank you for participating! \n Please press SPACE to finish and inform the experimenter about the completion."
 }
