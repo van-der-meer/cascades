@@ -1,12 +1,12 @@
 import copy
 import numpy as np
 from functions_new import *
-from psychopy import visual, core, event  
+from psychopy import visual, core, event
 from exptools2.core import Trial, Session
 
 
-#exp_version = "v3_cycles_based"
-exp_version = "v4_3mqs"
+exp_version = "v3_cycles_based"
+#exp_version = "v4_3mqs"
 
 exp_folder_path = "experiment_versions/" + exp_version
 
@@ -27,7 +27,7 @@ class MQTrial(Trial):
         session,
         trial_nr,
         phase_durations,
-        params, 
+        params,
         mml_distances = None
     ):
 
@@ -36,7 +36,7 @@ class MQTrial(Trial):
             session=session,
             trial_nr=trial_nr,
             phase_durations=phase_durations,
-            phase_names=["alternation"] * len(phase_durations), 
+            phase_names=["alternation"] * len(phase_durations),
             timing="seconds"
         )
 
@@ -93,7 +93,7 @@ class MQTrial(Trial):
                 )
             )
 
-    
+
     def draw(self):
         """Draw stimuli for the current phase (one frame)."""
 
@@ -114,7 +114,7 @@ class MQTrial(Trial):
         if self.last_resp == "s":
             self.stop_trial()
 
-        if self.button: 
+        if self.button:
             if self.last_resp == self.button:
 
                 if self.mml:
@@ -159,7 +159,7 @@ class TextTrial(Trial):
                 height=element["size"],
                 pos=element["pos"]
             ))
-            
+
 
     def draw(self):
         """Draw text and wait for space bar."""
@@ -171,11 +171,11 @@ class TextTrial(Trial):
             self.stop_trial()
 
         # Check for button press
-        if self.button: 
+        if self.button:
             if self.last_resp == self.button:
                 self.stop_trial()
 
-    
+
 # --------------------------------------------------
 # Session class
 # --------------------------------------------------
@@ -206,21 +206,21 @@ class CascExpSession(Session):
 
                 base_distance = 100
                 mml_dist = 60
-                mml_multipliers = [-1, 1] * n_mml_reps 
+                mml_multipliers = [-1, 1] * n_mml_reps
                 mml_durs = [14, 16, 18, 20] * 2  # should be n
                 mml_idx = np.arange(0, n_mml_reps * 2)
 
                 np.random.shuffle(mml_idx)
 
-                phase_durations = [1/self.trial_params["freq"]] * self.trial_params["len_trial"] * 2 
+                phase_durations = [1/self.trial_params["freq"]] * self.trial_params["len_trial"] * 2
 
                 for idx in mml_idx:
 
                     if mml_multipliers[idx] == -1:
-                        init_pos = "lu", 
+                        init_pos = "lu",
                     else:
-                        init_pos = "ru", 
-                    
+                        init_pos = "ru",
+
                     mq_idx = list(self.trial_params["mqs"])[0]
 
                     mq_params = self.trial_params["mqs"][mq_idx]
@@ -237,7 +237,7 @@ class CascExpSession(Session):
 
                     self.trial_params["mqs"][mq_idx] = mq_params
 
-                    phase_durations = [1/self.trial_params["freq"]] * self.trial_params["len_trial"] * 2 
+                    phase_durations = [1/self.trial_params["freq"]] * self.trial_params["len_trial"] * 2
 
                     self.inst_trials.append(
                         MQTrial(
@@ -246,11 +246,11 @@ class CascExpSession(Session):
                             phase_durations=phase_durations,
                             params=self.trial_params)
                             )
-                    
+
                     self.trial_params_output.append({self.trial_counter: self.trial_params})
-                    
+
                     self.trial_counter += 1
-                    
+
 
 
             elif "inst" in trial and self.trial_params["trial_type"] == "text":
@@ -264,7 +264,7 @@ class CascExpSession(Session):
 
             elif "inst" in trial and self.trial_params["trial_type"] == "stim":
 
-                phase_durations = [1/self.trial_params["freq"]] * self.trial_params["len_trial"] * 2 
+                phase_durations = [1/self.trial_params["freq"]] * self.trial_params["len_trial"] * 2
 
                 self.inst_trials.append(
                     MQTrial(
@@ -273,7 +273,7 @@ class CascExpSession(Session):
                         phase_durations=phase_durations,
                         params=self.trial_params)
                         )
-                
+
                 self.trial_params_output.append({self.trial_counter: self.trial_params})
 
                 self.trial_counter += 1
@@ -291,21 +291,21 @@ class CascExpSession(Session):
 
         mml_distances = np.mean(np.abs(self.output), axis = 0)[0]
 
-        mml_distances = mml_distances * 1 # scale this up or down a bit 
+        mml_distances = mml_distances * 1 # scale this up or down a bit
 
 
-        self.break_text_trial_params = exp_params["break_text"] # unelegant... 
+        self.break_text_trial_params = exp_params["break_text"] # unelegant...
 
         for trial in self.trial_names:
 
             self.trial_params = exp_params[trial]
 
 
-            if "main_exp" in trial: 
+            if "main_exp" in trial:
 
                 reps_main_block = 10
 
-                # vars 
+                # vars
 
                 vals_side = [0, -1]
 
@@ -313,7 +313,7 @@ class CascExpSession(Session):
 
                 cue_present = [True, False]
 
-                timings = [4, 6, 8, 10] # cycles 
+                timings = [4, 6, 8, 10] # cycles
 
                 #combinations = [(w, x, y, z) for w in vals_side for x in vals_disamb for y in timings for z in cue_present]
 
@@ -329,7 +329,7 @@ class CascExpSession(Session):
                         (x is None and z is False and y in [4, 6]) or
                         (x == "hor" and z is False and (w == 0 or y in [8, 10])) or
                         (x == "ver" and z is False and (w == 0 or y in [8, 10])) or
-                        (x is None and w == 0) 
+                        (x is None and w == 0)
                     )
                 ]
 
@@ -337,22 +337,22 @@ class CascExpSession(Session):
 
                     np.random.shuffle(combinations)
 
-                    for combination in combinations: 
+                    for combination in combinations:
 
                         trial_copy = copy.deepcopy(self.trial_params)
 
                         if combination[0] == 0:
                             side = "left"
-                        else: 
+                        else:
                             side = "right"
 
                         if combination[1] == "hor":
                             disamb = "hor"
                         elif combination[1] == "ver":
                             disamb = "ver"
-                        else: 
+                        else:
                             disamb = "none"
-                        
+
                         trial_copy["trial_nr"] = self.trial_counter
 
                         mq_idxs = list(self.trial_params["mqs"])
@@ -384,13 +384,13 @@ class CascExpSession(Session):
                         trial_copy["len_trial"] = total_dur
 
 
-                        trial_copy["params"] = {"side": side, 
-                                                "disamb": disamb, 
-                                                "cue_present": combination[3], 
-                                                "cue_delay": combination[2], 
-                                                "trial_nr": self.trial_counter, 
-                                                "prime_start": prime_start, 
-                                                "cycles_prime": cycles_prime, 
+                        trial_copy["params"] = {"side": side,
+                                                "disamb": disamb,
+                                                "cue_present": combination[3],
+                                                "cue_delay": combination[2],
+                                                "trial_nr": self.trial_counter,
+                                                "prime_start": prime_start,
+                                                "cycles_prime": cycles_prime,
                                                 "amb_1_start": amb_1_start,
                                                 "amb_2_start": amb_2_start,
                                                 "amb_2_dur": amb_2_dur,
@@ -419,10 +419,10 @@ class CascExpSession(Session):
                         for cue_idx in cue_idxs:
                             trial_copy["mqs"][mq_idxs[cue_idx]]["start_cycle"] = cue_start
                             trial_copy["mqs"][mq_idxs[cue_idx]]["cycles"] = cue_dur
-                        
-                        if combination[3]: 
+
+                        if combination[3]:
                             trial_copy["mqs"][mq_idxs[cue_idxs[combination[0]]]]["disamb"] = cue_dir
-                        else: 
+                        else:
                             trial_copy["mqs"][mq_idxs[cue_idxs[combination[0]]]]["disamb"] = None
 
                         for amb2_idx in amb2_idxs:
@@ -431,17 +431,17 @@ class CascExpSession(Session):
 
 
 
-                        phase_durations = [1/trial_copy["freq"]] * trial_copy["len_trial"] * 2 
+                        phase_durations = [1/trial_copy["freq"]] * trial_copy["len_trial"] * 2
 
                         self.exp_trials.append(
                             MQTrial(
                                 session=self,
                                 trial_nr=self.trial_counter,
                                 phase_durations=phase_durations,
-                                params=trial_copy, 
+                                params=trial_copy,
                                 mml_distances=mml_distances)
                                 )
-                        
+
                         self.trial_params_output.append({self.trial_counter: trial_copy})
                         self.trial_counter += 1
 
@@ -467,17 +467,17 @@ class CascExpSession(Session):
 
             elif "exp" in trial and self.trial_params["trial_type"] == "stim":
 
-                phase_durations = [1/self.trial_params["freq"]] * self.trial_params["len_trial"] * 2 
+                phase_durations = [1/self.trial_params["freq"]] * self.trial_params["len_trial"] * 2
 
                 self.exp_trials.append(
                     MQTrial(
                         session=self,
                         trial_nr=self.trial_counter,
                         phase_durations=phase_durations,
-                        params=self.trial_params, 
+                        params=self.trial_params,
                         mml_distances=mml_distances)
                         )
-                
+
                 self.trial_params_output.append({self.trial_counter: self.trial_params})
 
                 self.trial_counter += 1
@@ -515,7 +515,7 @@ class CascExpSession(Session):
 
         self.start_experiment()
 
-        
+
 
         self.create_inst_mml_trials()
 
