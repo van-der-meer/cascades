@@ -3,7 +3,7 @@ window:
     - 0
     - 0
     - 0
-    fullscr: false
+    fullscr: true
     pos:
     - 0
     - 0
