@@ -15,7 +15,7 @@ pilot_pps = c("lk", "pp3", "222", "1") # some of these still have different data
 
 # pps 001: first block went wrong! Adjust explanation!
 
-subject = "002"
+subject = "007"
 #subject = "test_daniel"
 
 
@@ -29,7 +29,10 @@ for (trial in exp_params){
   trial_ids = c(trial_ids, names(trial))
 }
 
-trial_ids_numeric = as.numeric(trial_ids[1:(length(trial_ids)-1)])
+# pp 001 and 002
+#trial_ids_numeric = as.numeric(trial_ids[1:(length(trial_ids)-1)])
+
+trial_ids_numeric = as.numeric(trial_ids[1:(length(trial_ids)-2)])
 
 trial = 1
 
@@ -70,24 +73,6 @@ cycles_prime = 2
 
 # for pp 001
 
-params_df = data.frame(
-  main_trial_ids,
-  side = unlist(lapply(main_trials, function(x)
-    x$params$side)),
-  disamb = unlist(lapply(main_trials, function(x)
-    x$params$disamb)),
-  cue_present = unlist(lapply(main_trials, function(x)
-    x$params$cue_present)),
-  cue_delay = unlist(lapply(main_trials, function(x)
-    x$params$cue_onset)),
-  cue_onset = unlist(lapply(main_trials, function(x)
-    x$params$cue_start)),
-  trial_duration = unlist(lapply(main_trials, function(x)
-    x$len_trial))
-)
-
-# for later data
-
 # params_df = data.frame(
 #   main_trial_ids,
 #   side = unlist(lapply(main_trials, function(x)
@@ -97,12 +82,30 @@ params_df = data.frame(
 #   cue_present = unlist(lapply(main_trials, function(x)
 #     x$params$cue_present)),
 #   cue_delay = unlist(lapply(main_trials, function(x)
-#     x$params$cue_delay)),
+#     x$params$cue_onset)),
 #   cue_onset = unlist(lapply(main_trials, function(x)
 #     x$params$cue_start)),
 #   trial_duration = unlist(lapply(main_trials, function(x)
 #     x$len_trial))
 # )
+
+# for later data
+
+params_df = data.frame(
+  main_trial_ids,
+  side = unlist(lapply(main_trials, function(x)
+    x$params$side)),
+  disamb = unlist(lapply(main_trials, function(x)
+    x$params$disamb)),
+  cue_present = unlist(lapply(main_trials, function(x)
+    x$params$cue_present)),
+  cue_delay = unlist(lapply(main_trials, function(x)
+    x$params$cue_delay)),
+  cue_onset = unlist(lapply(main_trials, function(x)
+    x$params$cue_start)),
+  trial_duration = unlist(lapply(main_trials, function(x)
+    x$len_trial))
+)
 
 
 
@@ -291,17 +294,17 @@ summary(lm_1)
 
 #hist(trial_durs$trial_dur, xlim = c(10, 70))
 
-library(BayesFactor)
-
-
-trial_durs_filtered = trial_durs %>% filter(disamb != "none")
-
-bf_anova <- anovaBF(
-  trial_dur ~ condition,
-  data = trial_durs_filtered
-)
-
-1/bf_anova
+# library(BayesFactor)
+# 
+# 
+# trial_durs_filtered = trial_durs %>% filter(disamb != "none")
+# 
+# bf_anova <- anovaBF(
+#   trial_dur ~ condition,
+#   data = trial_durs_filtered
+# )
+# 
+# 1/bf_anova
 
 
 
