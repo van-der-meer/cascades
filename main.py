@@ -5,8 +5,8 @@ from psychopy import visual, core, event
 from exptools2.core import Trial, Session
 
 
-exp_version = "v3_cycles_based"
-#exp_version = "v4_3mqs"
+#exp_version = "v3_cycles_based"
+exp_version = "v4_3mqs"
 
 exp_folder_path = "experiment_versions/" + exp_version
 
@@ -313,7 +313,7 @@ class CascExpSession(Session):
 
                 cue_present = [True, False]
 
-                timings = [4, 6, 8, 10] # cycles
+                timings = [2, 4, 6, 8] # cycles
 
                 #combinations = [(w, x, y, z) for w in vals_side for x in vals_disamb for y in timings for z in cue_present]
 

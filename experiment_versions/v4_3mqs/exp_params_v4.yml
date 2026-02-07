@@ -156,6 +156,41 @@ inst_amb_1:
     }
 
 
+inst_text_amb_2:
+  trial_identifier: "inst_text_amb_2" # inst
+  trial_type: "text"
+  continue: "space"
+  texts: {"text": 
+                    {
+                    content: "inst_text_amb_2",
+                    pos: [0, 0],
+                    size: 30
+                    }, 
+                  "continue_with_space":
+                    {
+                    content: "space_to_cont",
+                    pos: [0, -200],
+                    size: 25
+                    },
+    }
+
+inst_amb_2:
+  trial_identifier: "inst_amb_2"    # exp 
+  len_trial: 40
+  trial_type: "stim"
+  freq: 5         # frequency of alternations 
+  mqs: {
+    mq1: {"type": "mq",
+        "cycles": 40,      # nr of cycles (one cycle is one of each positions)
+        "center": [0, 0], 
+        "dot_size": 10,   # in px
+        "dist_hor_start": 80,  # in px
+        "dist_ver_start": 100,  # in px
+        "init_pos": "ru", # left up (or ru)
+        "start_cycle": 0,
+        }
+    }
+
 inst_text_limits_1:
   trial_identifier: "inst_text_mml_1" # inst
   trial_type: "text"
@@ -390,6 +425,24 @@ exp_text_2:
           },
     }
 
+exp_text_3:
+  trial_identifier: "exp_text_3" # inst
+  trial_type: "text"
+  continue: "space"
+  texts: {"text": 
+          {
+          content: "exp_text_3",
+          pos: [0, 0],
+          size: 30
+          }, 
+        "continue_with_space":
+          {
+          content: "space_to_cont",
+          pos: [0, -200],
+          size: 25
+          },
+    }
+
 exp_expl_1:
   trial_identifier: "exp_expl_1"    # exp 
   len_trial: 10
@@ -421,24 +474,6 @@ exp_expl_1:
           "init_pos": "ru", # left up (or ru)
           "start_cycle": 0,
         }
-    }
-
-exp_text_3:
-  trial_identifier: "exp_text_3" # inst
-  trial_type: "text"
-  continue: "space"
-  texts: {"text": 
-          {
-          content: "exp_text_3",
-          pos: [0, 0],
-          size: 30
-          }, 
-        "continue_with_space":
-          {
-          content: "space_to_cont",
-          pos: [0, -200],
-          size: 25
-          },
     }
 
 exp_text_4:
@@ -484,6 +519,24 @@ exp_text_6:
   texts: {"text": 
           {
           content: "exp_text_6",
+          pos: [0, 0],
+          size: 30
+          }, 
+        "continue_with_space":
+          {
+          content: "space_to_cont",
+          pos: [0, -200],
+          size: 25
+          },
+    }
+
+exp_text_7:
+  trial_identifier: "exp_text_7" # inst
+  trial_type: "text"
+  continue: "space"
+  texts: {"text": 
+          {
+          content: "exp_text_7",
           pos: [0, 0],
           size: 30
           }, 
@@ -555,13 +608,13 @@ exp_expl_2:
         },
     }
 
-exp_text_7:
-  trial_identifier: "exp_text_7" # inst
+exp_text_8:
+  trial_identifier: "exp_text_8" # inst
   trial_type: "text"
   continue: "space"
   texts: {"text": 
           {
-          content: "exp_text_7",
+          content: "exp_text_8",
           pos: [0, 0],
           size: 30
           }, 
@@ -633,23 +686,6 @@ exp_expl_3:
         },
     }
 
-exp_text_8:
-  trial_identifier: "exp_text_8" # inst
-  trial_type: "text"
-  continue: "space"
-  texts: {"text": 
-          {
-          content: "exp_text_8",
-          pos: [0, 0],
-          size: 30
-          }, 
-        "continue_with_space":
-          {
-          content: "space_to_cont",
-          pos: [0, -200],
-          size: 25
-          },
-    }
 
 exp_text_9:
   trial_identifier: "exp_text_9" # inst
@@ -872,7 +908,7 @@ exp_text_11:
         "continue_with_space":
           {
           content: "space_to_cont",
-          pos: [0, -200],
+          pos: [0, -300],
           size: 25
           },
     }
@@ -895,23 +931,23 @@ exp_text_12:
           },
     }
 
-exp_text_13:
-  trial_identifier: "exp_text_13" # inst
-  trial_type: "text"
-  continue: "space"
-  texts: {"text": 
-          {
-          content: "exp_text_13",
-          pos: [0, 0],
-          size: 30
-          }, 
-        "continue_with_space":
-          {
-          content: "space_to_cont",
-          pos: [0, -200],
-          size: 25
-          },
-    }
+# exp_text_13:
+#   trial_identifier: "exp_text_13" # inst
+#   trial_type: "text"
+#   continue: "space"
+#   texts: {"text": 
+#           {
+#           content: "exp_text_13",
+#           pos: [0, 0],
+#           size: 30
+#           }, 
+#         "continue_with_space":
+#           {
+#           content: "space_to_cont",
+#           pos: [0, -200],
+#           size: 25
+#           },
+#     }
 
 main_exp:
   trial_identifier: "main_exp"    # exp 
