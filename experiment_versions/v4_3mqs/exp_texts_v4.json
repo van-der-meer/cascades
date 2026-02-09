@@ -18,7 +18,7 @@
   "exp_text_6": "If all dots jump together a few times before they start jumping separately, it can influence how you see them move for a while.",
   "exp_text_7": "In the next screen you will likely see all dots move up and down for a while.",
   "exp_text_8": "Now you will likely see them move from left to right.",
-  "exp_text_9": "After the first few jumps, the dots start jumping separately again. \n \n Right after thicenters change, the dots will likely jump in the same direction as the initial parallel movement. \n \n After a while, the direction might still spontaneously change.",
+  "exp_text_9": "After the first few jumps, the dots start jumping separately again. \n \n Right after this change, the dots will likely jump in the same direction as the initial parallel movement. \n \n After a while, the direction might still spontaneously change.",
   "exp_text_10": "Please pay attention which direction the dots are jumping. \n \n As soon as the dots changed into the state where they jump separately, if you notice the direction change, press SPACE as fast as possible.",
   "exp_text_11": "IMPORTANT:\n \n At the beginning of some trials, all dots will move in the same direction\n (only up-down OR only left-right).\n \n This initial motion is intentional.\n Do NOT press SPACE during this part.\n \n After a short time, the motion becomes ambiguous and may switch.\n \n ONLY press SPACE when you notice a change in motion direction\n during this later, ambiguous phase.",
   "exp_text_12": "IMPORTANT:\n \n Please focus your attention on the two dots jumping in the center of the screen. \n \n You may notice changes in the jumping of the dots to the left or right. \n \n Only respond if you notice a change of direction in the  dots.",

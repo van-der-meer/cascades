@@ -926,7 +926,7 @@ exp_text_12:
         "continue_with_space":
           {
           content: "space_to_cont",
-          pos: [0, -200],
+          pos: [0, -300],
           size: 25
           },
     }
