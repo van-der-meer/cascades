@@ -21,7 +21,7 @@
   "exp_text_9": "After the first few jumps, the dots start jumping separately again. \n \n Right after thicenters change, the dots will likely jump in the same direction as the initial parallel movement. \n \n After a while, the direction might still spontaneously change.",
   "exp_text_10": "Please pay attention which direction the dots are jumping. \n \n As soon as the dots changed into the state where they jump separately, if you notice the direction change, press SPACE as fast as possible.",
   "exp_text_11": "IMPORTANT:\n \n At the beginning of some trials, all dots will move in the same direction\n (only up-down OR only left-right).\n \n This initial motion is intentional.\n Do NOT press SPACE during this part.\n \n After a short time, the motion becomes ambiguous and may switch.\n \n ONLY press SPACE when you notice a change in motion direction\n during this later, ambiguous phase.",
-  "exp_text_12": "IMPORTANT:\n \n Please focus your attention on the two dots jumping in the center of the screen. \n \n You may notice changes in the jumping of the dots tp the left or right. \n \n Only respond if you notice a change of direction in the  dots.",
+  "exp_text_12": "IMPORTANT:\n \n Please focus your attention on the two dots jumping in the center of the screen. \n \n You may notice changes in the jumping of the dots to the left or right. \n \n Only respond if you notice a change of direction in the  dots.",
   "exp_text_13": "When you are ready, press SPACE to start.",
   "exp_break_text_1": "Time for a short break. \n Press space to continue when you are ready.",
   "exp_complete_text": "Thank you for participating! \n Please press SPACE to finish and inform the experimenter about the completion."
