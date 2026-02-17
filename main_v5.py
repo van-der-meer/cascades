@@ -9,7 +9,7 @@ exp_version = "v5"
 
 exp_folder_path = "experiment_versions/" + exp_version
 
-run_istruction = False
+run_istruction = True
 
 exp_params, exp_texts = open_params(exp_folder_path)
 
@@ -315,7 +315,7 @@ class CascExpSession(Session):
 
                 vals_side = ["left", "right"]
 
-                vals_disamb = ["hor", "ver", None, None]
+                vals_disamb = ["hor", "ver", None]
                 #vals_disamb = ["hor", "ver"]
 
                 n_cue = [1, 2, 3] # how many mqs are affected on one side 
@@ -410,7 +410,8 @@ class CascExpSession(Session):
                                                 "amb_2_start": amb_2_start,
                                                 "amb_2_dur": amb_2_dur,
                                                 "cue_start": cue_start,
-                                                "cue_dur": cue_dur}
+                                                "cue_dur": cue_dur, 
+                                                "n_biased": combination[0]}
 
 
 

@@ -11,7 +11,7 @@ exp_version = "v5"
 
 data_folder = paste0("experiment_versions/", exp_version, "/logs_", exp_version, "/")
 
-subject = "test123"
+subject = "sdfgfdg"
 #subject = "test_daniel"
 
 
@@ -63,9 +63,10 @@ params_df = data.frame(
   cue_onset = unlist(lapply(main_trials, function(x)
     x$params$cue_start)),
   trial_duration = unlist(lapply(main_trials, function(x)
-    x$len_trial))
+    x$len_trial)), 
+  n_mqs_biased = unlist(lapply(main_trials, function(x)
+    x$params$n_biased))
 )
-
 
 
 # no prime no cue:
@@ -129,6 +130,9 @@ params_df %>% filter(disamb == "ver", cue_present == T, side == "right", cue_del
 params_df %>% filter(disamb == "ver", cue_present == T, side == "right", cue_delay == 4) %>% nrow()
 # prime vertical and cue right and cue onset 8:
 params_df %>% filter(disamb == "ver", cue_present == T, side == "right", cue_delay == 6) %>% nrow()
+
+params_df %>% filter(disamb == "ver", cue_present == T, side == "right", cue_delay == 6, n_mqs_biased == 1) %>% nrow()
+
 
 params_df %>% head()
 events %>% head()
