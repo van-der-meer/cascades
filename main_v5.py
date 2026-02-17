@@ -5,12 +5,9 @@ from psychopy import visual, core, event
 from exptools2.core import Trial, Session
 
 
-#exp_version = "v3_cycles_based"
-exp_version = "v4_3mqs"
+exp_version = "v5"
 
 exp_folder_path = "experiment_versions/" + exp_version
-
-
 
 
 exp_params, exp_texts = open_params(exp_folder_path)
@@ -55,7 +52,11 @@ class MQTrial(Trial):
 
         self.quartets = []
 
+        self.colors = []
+
         for mq_pars in self.params["mqs"].values():
+
+            self.colors.extend([mq_pars.get("color", [1, 1, 1])] * mq_pars.get("n_dots", 2))
 
             if isinstance(self.mml_distances, np.ndarray):
                 mq_pars["dist_hor_start"] = self.mml_distances[0]
@@ -69,7 +70,12 @@ class MQTrial(Trial):
         self.stims = []
 
         for frame in self.concatenated:
-            coords = frame[~np.isnan(frame).all(axis=1)]
+            #coords = frame[~np.isnan(frame).all(axis=1)]
+
+            mask = ~np.isnan(frame).all(axis=1)
+            coords = frame[mask]
+            colors = np.array(self.colors)[mask]
+
 
             if coords.shape[0] == 0:
                 # Create "empty" stim by putting a single element off-screen
@@ -88,7 +94,7 @@ class MQTrial(Trial):
                     sfs=0,               # spatial frequency 0 = filled circles
                     elementTex=None,     # use disk instead of texture
                     elementMask='circle',
-                    colors=[1, 1, 1],     # single RGB color for all dots
+                    colors=colors,     # single RGB color for all dots
                     colorSpace='rgb'
                 )
             )
@@ -143,7 +149,6 @@ class TextTrial(Trial):
         self.button = self.params.get("continue")
 
         self.create_trial()
-
 
     def create_trial(self):
         """Create the PsychoPy TextStim."""
@@ -291,7 +296,7 @@ class CascExpSession(Session):
 
         mml_distances = np.mean(np.abs(self.output), axis = 0)[0]
 
-        mml_distances = mml_distances * 1 # scale this up or down a bit
+        mml_distances = mml_distances * 0.8 # scale this up or down a bit
 
 
         self.break_text_trial_params = exp_params["break_text"] # unelegant...
@@ -307,19 +312,24 @@ class CascExpSession(Session):
 
                 # vars
 
-                vals_side = [0, -1]
+                vals_side = ["left", "right"]
 
-                vals_disamb = ["hor", "ver", None, None]
+                #vals_disamb = ["hor", "ver", None, None]
+                vals_disamb = ["hor", "ver"]
 
-                cue_present = [True, False]
+                n_cue = [1, 2, 3] # how many mqs are affected on one side 
 
-                timings = [2, 4, 6, 8] # cycles
+                #cue_present = [True, False]
+                cue_present = [True]
+
+                timings = [2, 4, 6] # cycles
 
                 #combinations = [(w, x, y, z) for w in vals_side for x in vals_disamb for y in timings for z in cue_present]
 
                 # should balance classes by preventing too many conditions without prime
                 combinations = [
-                    (w, x, y, z)
+                    (v, w, x, y, z)
+                    for v in n_cue
                     for w in vals_side
                     for x in vals_disamb
                     for y in timings
@@ -341,14 +351,11 @@ class CascExpSession(Session):
 
                         trial_copy = copy.deepcopy(self.trial_params)
 
-                        if combination[0] == 0:
-                            side = "left"
-                        else:
-                            side = "right"
+                        side = combination[1]
 
-                        if combination[1] == "hor":
+                        if combination[2] == "hor":
                             disamb = "hor"
-                        elif combination[1] == "ver":
+                        elif combination[2] == "ver":
                             disamb = "ver"
                         else:
                             disamb = "none"
@@ -362,22 +369,22 @@ class CascExpSession(Session):
                         cue_idxs = np.where(["cue" in x for x in mq_idxs])[0]
                         amb2_idxs = np.where(["amb2" in x for x in mq_idxs])[0]
 
-                        prime_start = 4
-                        cycles_prime = 2
+                        prime_start = 4  # 4 cycles = 8 * 0.2 s = 1.6 s
+                        cycles_prime = 2 # 2 cycles = 4 * 0.2 s = 0.8 s
 
-                        amb_1_start = prime_start + cycles_prime
+                        amb_1_start = prime_start + cycles_prime # 2.4 s
 
-                        amb_1_dur = combination[2]
+                        amb_1_dur = combination[3]
 
                         cue_start = amb_1_dur + amb_1_start # 2 cycles prime
 
-                        cue_dur = 4
+                        cue_dur = 8
 
                         amb_2_start = cue_start + cue_dur
 
                         #amb_2_dur = total_dur - amb_2_start
 
-                        amb_2_dur = 14
+                        amb_2_dur = 20 - cue_start
 
                         total_dur = amb_2_start + amb_2_dur
 
@@ -386,8 +393,8 @@ class CascExpSession(Session):
 
                         trial_copy["params"] = {"side": side,
                                                 "disamb": disamb,
-                                                "cue_present": combination[3],
-                                                "cue_delay": combination[2],
+                                                "cue_present": combination[4],
+                                                "cue_delay": combination[3],
                                                 "trial_nr": self.trial_counter,
                                                 "prime_start": prime_start,
                                                 "cycles_prime": cycles_prime,
@@ -399,12 +406,27 @@ class CascExpSession(Session):
 
 
 
-                        if combination[1] == "hor":
-                            cue_dir = "ver"
-                        elif combination[1] == "ver":
-                            cue_dir = "hor"
+                        if combination[2] == "hor":
+                            #cue_dir = "ver"
+                            cue_dist_hor =  mml_distances[0] * 1.75
+                            cue_dist_ver =  mml_distances[0] * 1/1.75
+                            
+                            for mq in mq_idxs:
+                                trial_copy["mqs"][mq]["dist_hor_start"] = mml_distances[0]# * 0.95
+                                trial_copy["mqs"][mq]["dist_ver_start"] = mml_distances[1]# * 1.05
+
+                        elif combination[2] == "ver":
+                            #cue_dir = "hor"
+                            cue_dist_hor =  mml_distances[0] * 1/1.75
+                            cue_dist_ver =  mml_distances[0] * 1.75
+                            for mq in mq_idxs:
+                                trial_copy["mqs"][mq]["dist_hor_start"] = mml_distances[0]# * 1.05
+                                trial_copy["mqs"][mq]["dist_ver_start"] = mml_distances[1]# * 0.95
                         else:
-                            cue_dir = None
+                            for mq in mq_idxs:
+                                trial_copy["mqs"][mq]["dist_hor_start"] = mml_distances[0]
+                                trial_copy["mqs"][mq]["dist_ver_start"] = mml_distances[1]
+                            #cue_dir = None
 
 
                         
@@ -413,7 +435,7 @@ class CascExpSession(Session):
                         for prime in prime_idxs:
                             trial_copy["mqs"][mq_idxs[prime]]["start_cycle"] = prime_start
                             trial_copy["mqs"][mq_idxs[prime]]["cycles"] = cycles_prime
-                            trial_copy["mqs"][mq_idxs[prime]]["disamb"] = combination[1]
+                            trial_copy["mqs"][mq_idxs[prime]]["disamb"] = combination[2]
 
                         for amb1_idx in amb1_idxs:
                             trial_copy["mqs"][mq_idxs[amb1_idx]]["start_cycle"] = amb_1_start
@@ -423,10 +445,17 @@ class CascExpSession(Session):
                             trial_copy["mqs"][mq_idxs[cue_idx]]["start_cycle"] = cue_start
                             trial_copy["mqs"][mq_idxs[cue_idx]]["cycles"] = cue_dur
 
-                        if combination[3]:
-                            trial_copy["mqs"][mq_idxs[cue_idxs[combination[0]]]]["disamb"] = cue_dir
-                        else:
-                            trial_copy["mqs"][mq_idxs[cue_idxs[combination[0]]]]["disamb"] = None
+                        if combination[4]:
+                            #trial_copy["mqs"][mq_idxs[cue_idxs[combination[1]]]]["disamb"] = cue_dir
+
+                            if combination[1] == "left":
+                                cue_idxs_screen = cue_idxs[:combination[0]]
+                            else:
+                                cue_idxs_screen = cue_idxs[-combination[0]:]
+
+                            for cue_idx_screen in cue_idxs_screen:
+                                trial_copy["mqs"][mq_idxs[cue_idx_screen]]["dist_hor_start"] = cue_dist_hor
+                                trial_copy["mqs"][mq_idxs[cue_idx_screen]]["dist_ver_start"] = cue_dist_ver
 
                         for amb2_idx in amb2_idxs:
                             trial_copy["mqs"][mq_idxs[amb2_idx]]["start_cycle"] = amb_2_start
@@ -441,8 +470,8 @@ class CascExpSession(Session):
                                 session=self,
                                 trial_nr=self.trial_counter,
                                 phase_durations=phase_durations,
-                                params=trial_copy,
-                                mml_distances=mml_distances
+                                params=trial_copy#,
+                                #mml_distances=mml_distances
                                 )
                                 )
 
