@@ -418,7 +418,7 @@ class CascExpSession(Session):
                         if combination[2] == "hor":
                             #cue_dir = "ver"
                             cue_dist_hor =  mml_distances[0] * 1.75
-                            cue_dist_ver =  mml_distances[0] * 1/1.75
+                            cue_dist_ver =  mml_distances[1] * 1/1.75
                             
                             for mq in mq_idxs:
                                 trial_copy["mqs"][mq]["dist_hor_start"] = mml_distances[0]# * 0.95
@@ -427,7 +427,7 @@ class CascExpSession(Session):
                         elif combination[2] == "ver":
                             #cue_dir = "hor"
                             cue_dist_hor =  mml_distances[0] * 1/1.75
-                            cue_dist_ver =  mml_distances[0] * 1.75
+                            cue_dist_ver =  mml_distances[1] * 1.75
                             for mq in mq_idxs:
                                 trial_copy["mqs"][mq]["dist_hor_start"] = mml_distances[0]# * 1.05
                                 trial_copy["mqs"][mq]["dist_ver_start"] = mml_distances[1]# * 0.95
