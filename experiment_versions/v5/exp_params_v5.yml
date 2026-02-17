@@ -625,7 +625,7 @@ inst_mml:
     }
 
 
-exp_text_1:
+exp_expl_text_1:
   trial_identifier: "exp_text_1" # inst
   trial_type: "text"
   continue: "space"
@@ -643,7 +643,7 @@ exp_text_1:
           },
     }
 
-exp_text_2:
+exp_expl_text_2:
   trial_identifier: "exp_text_2" # inst
   trial_type: "text"
   continue: "space"
@@ -669,7 +669,7 @@ exp_expl_1:
   freq: 5         # frequency of alternations
   mqs: {
     mq1_amb1: {"cycles": 10,      # nr of cycles (one cycle is one of each positions)
-          "center": [-150, 0],
+          "center": [-450, 0],
           "dot_size": 10,   # in px
           "dist_hor_start": 60,  # in px
           "dist_ver_start": 80,  # in px
@@ -677,7 +677,7 @@ exp_expl_1:
           "start_cycle": 0,
         },
     mq2_amb1: {"cycles": 10,      # nr of cycles (one cycle is one of each positions)
-          "center": [0, 0],
+          "center": [-300, 0],
           "dot_size": 10,   # in px
           "dist_hor_start": 60,  # in px
           "dist_ver_start": 80,  # in px
@@ -685,7 +685,39 @@ exp_expl_1:
           "start_cycle": 0,
         },
     mq3_amb1: {"cycles": 10,      # nr of cycles (one cycle is one of each positions)
+          "center": [-150, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 0,
+        },
+    mq4_amb1: {"cycles": 10,      # nr of cycles (one cycle is one of each positions)
+          "center": [0, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 0,
+        },
+    mq5_amb1: {"cycles": 10,      # nr of cycles (one cycle is one of each positions)
           "center": [150, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 0,
+        },
+    mq6_amb1: {"cycles": 10,      # nr of cycles (one cycle is one of each positions)
+          "center": [300, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 0,
+        },
+    mq7_amb1: {"cycles": 10,      # nr of cycles (one cycle is one of each positions)
+          "center": [450, 0],
           "dot_size": 10,   # in px
           "dist_hor_start": 60,  # in px
           "dist_ver_start": 80,  # in px
@@ -694,7 +726,7 @@ exp_expl_1:
         }
     }
 
-exp_text_3:
+exp_expl_text_3:
   trial_identifier: "exp_text_3" # inst
   trial_type: "text"
   continue: "space"
@@ -712,7 +744,7 @@ exp_text_3:
           },
     }
 
-exp_text_4:
+exp_expl_text_4:
   trial_identifier: "exp_text_4" # inst
   trial_type: "text"
   continue: "space"
@@ -730,7 +762,7 @@ exp_text_4:
           },
     }
 
-exp_text_5:
+exp_expl_text_5:
   trial_identifier: "exp_text_5" # inst
   trial_type: "text"
   continue: "space"
@@ -756,7 +788,7 @@ exp_expl_2:
   freq: 5         # frequency of alternations
   mqs: {
     mq1_prime: {"cycles": 2,      # nr of cycles (one cycle is one of each positions)
-          "center": [-150, 0],
+          "center": [-450, 0],
           "dot_size": 10,   # in px
           "dist_hor_start": 60,  # in px
           "dist_ver_start": 80,  # in px
@@ -765,7 +797,7 @@ exp_expl_2:
           "disamb": "ver"
         },
     mq2_prime: {"cycles": 2,      # nr of cycles (one cycle is one of each positions)
-          "center": [0, 0],
+          "center": [-300, 0],
           "dot_size": 10,   # in px
           "dist_hor_start": 60,  # in px
           "dist_ver_start": 80,  # in px
@@ -774,6 +806,24 @@ exp_expl_2:
           "disamb": "ver"
         },
     mq3_prime: {"cycles": 2,      # nr of cycles (one cycle is one of each positions)
+          "center": [-150, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 1,
+          "disamb": "ver"
+        },
+    mq4_prime: {"cycles": 2,      # nr of cycles (one cycle is one of each positions)
+          "center": [0, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 1,
+          "disamb": "ver"
+        },
+    mq5_prime: {"cycles": 2,      # nr of cycles (one cycle is one of each positions)
           "center": [150, 0],
           "dot_size": 10,   # in px
           "dist_hor_start": 60,  # in px
@@ -782,8 +832,26 @@ exp_expl_2:
           "start_cycle": 1,
           "disamb": "ver"
         },
+    mq6_prime: {"cycles": 2,      # nr of cycles (one cycle is one of each positions)
+          "center": [300, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 1,
+          "disamb": "ver"
+        },
+    mq7_prime: {"cycles": 2,      # nr of cycles (one cycle is one of each positions)
+          "center": [450, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 1,
+          "disamb": "ver"
+        },
     mq1_amb1: {"cycles": 8,      # nr of cycles (one cycle is one of each positions)
-          "center": [-150, 0],
+          "center": [-450, 0],
           "dot_size": 10,   # in px
           "dist_hor_start": 60,  # in px
           "dist_ver_start": 80,  # in px
@@ -791,7 +859,7 @@ exp_expl_2:
           "start_cycle": 3,
         },
     mq2_amb1: {"cycles": 8,      # nr of cycles (one cycle is one of each positions)
-          "center": [0, 0],
+          "center": [-300, 0],
           "dot_size": 10,   # in px
           "dist_hor_start": 60,  # in px
           "dist_ver_start": 80,  # in px
@@ -799,7 +867,39 @@ exp_expl_2:
           "start_cycle": 3,
         },
     mq3_amb1: {"cycles": 8,      # nr of cycles (one cycle is one of each positions)
+          "center": [-150, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 3,
+        },
+    mq4_amb1: {"cycles": 8,      # nr of cycles (one cycle is one of each positions)
+          "center": [0, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 3,
+        },
+    mq5_amb1: {"cycles": 8,      # nr of cycles (one cycle is one of each positions)
           "center": [150, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 3,
+        },
+    mq6_amb1: {"cycles": 8,      # nr of cycles (one cycle is one of each positions)
+          "center": [300, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 3,
+        },
+    mq7_amb1: {"cycles": 8,      # nr of cycles (one cycle is one of each positions)
+          "center": [450, 0],
           "dot_size": 10,   # in px
           "dist_hor_start": 60,  # in px
           "dist_ver_start": 80,  # in px
@@ -808,7 +908,7 @@ exp_expl_2:
         },
     }
 
-exp_text_6:
+exp_expl_text_6:
   trial_identifier: "exp_text_6" # inst
   trial_type: "text"
   continue: "space"
@@ -834,7 +934,7 @@ exp_expl_3:
   freq: 5         # frequency of alternations
   mqs: {
     mq1_prime: {"cycles": 2,      # nr of cycles (one cycle is one of each positions)
-          "center": [-150, 0],
+          "center": [-450, 0],
           "dot_size": 10,   # in px
           "dist_hor_start": 60,  # in px
           "dist_ver_start": 80,  # in px
@@ -843,7 +943,7 @@ exp_expl_3:
           "disamb": "hor"
         },
     mq2_prime: {"cycles": 2,      # nr of cycles (one cycle is one of each positions)
-          "center": [0, 0],
+          "center": [-300, 0],
           "dot_size": 10,   # in px
           "dist_hor_start": 60,  # in px
           "dist_ver_start": 80,  # in px
@@ -852,6 +952,24 @@ exp_expl_3:
           "disamb": "hor"
         },
     mq3_prime: {"cycles": 2,      # nr of cycles (one cycle is one of each positions)
+          "center": [-150, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 1,
+          "disamb": "hor"
+        },
+    mq4_prime: {"cycles": 2,      # nr of cycles (one cycle is one of each positions)
+          "center": [0, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 1,
+          "disamb": "hor"
+        },
+    mq5_prime: {"cycles": 2,      # nr of cycles (one cycle is one of each positions)
           "center": [150, 0],
           "dot_size": 10,   # in px
           "dist_hor_start": 60,  # in px
@@ -860,8 +978,26 @@ exp_expl_3:
           "start_cycle": 1,
           "disamb": "hor"
         },
+    mq6_prime: {"cycles": 2,      # nr of cycles (one cycle is one of each positions)
+          "center": [300, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 1,
+          "disamb": "hor"
+        },
+    mq7_prime: {"cycles": 2,      # nr of cycles (one cycle is one of each positions)
+          "center": [450, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 1,
+          "disamb": "hor"
+        },
     mq1_amb1: {"cycles": 8,      # nr of cycles (one cycle is one of each positions)
-          "center": [-150, 0],
+          "center": [-450, 0],
           "dot_size": 10,   # in px
           "dist_hor_start": 60,  # in px
           "dist_ver_start": 80,  # in px
@@ -869,7 +1005,7 @@ exp_expl_3:
           "start_cycle": 3,
         },
     mq2_amb1: {"cycles": 8,      # nr of cycles (one cycle is one of each positions)
-          "center": [0, 0],
+          "center": [-300, 0],
           "dot_size": 10,   # in px
           "dist_hor_start": 60,  # in px
           "dist_ver_start": 80,  # in px
@@ -877,7 +1013,39 @@ exp_expl_3:
           "start_cycle": 3,
         },
     mq3_amb1: {"cycles": 8,      # nr of cycles (one cycle is one of each positions)
+          "center": [-150, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 3,
+        },
+    mq4_amb1: {"cycles": 8,      # nr of cycles (one cycle is one of each positions)
+          "center": [0, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 3,
+        },
+    mq5_amb1: {"cycles": 8,      # nr of cycles (one cycle is one of each positions)
           "center": [150, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 3,
+        },
+    mq6_amb1: {"cycles": 8,      # nr of cycles (one cycle is one of each positions)
+          "center": [300, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 3,
+        },
+    mq7_amb1: {"cycles": 8,      # nr of cycles (one cycle is one of each positions)
+          "center": [450, 0],
           "dot_size": 10,   # in px
           "dist_hor_start": 60,  # in px
           "dist_ver_start": 80,  # in px
@@ -886,7 +1054,7 @@ exp_expl_3:
         },
     }
 
-exp_text_7:
+exp_expl_text_7:
   trial_identifier: "exp_text_7" # inst
   trial_type: "text"
   continue: "space"
@@ -904,7 +1072,7 @@ exp_text_7:
           },
     }
 
-exp_text_8:
+exp_expl_text_8:
   trial_identifier: "exp_text_8" # inst
   trial_type: "text"
   continue: "space"
@@ -930,7 +1098,7 @@ exp_expl_3:
   freq: 5         # frequency of alternations
   mqs: {
     mq1_prime: {"cycles": 2,      # nr of cycles (one cycle is one of each positions)
-          "center": [-150, 0],
+          "center": [-450, 0],
           "dot_size": 10,   # in px
           "dist_hor_start": 60,  # in px
           "dist_ver_start": 80,  # in px
@@ -939,7 +1107,7 @@ exp_expl_3:
           "disamb": "hor"
         },
     mq2_prime: {"cycles": 2,      # nr of cycles (one cycle is one of each positions)
-          "center": [0, 0],
+          "center": [-300, 0],
           "dot_size": 10,   # in px
           "dist_hor_start": 60,  # in px
           "dist_ver_start": 80,  # in px
@@ -948,6 +1116,24 @@ exp_expl_3:
           "disamb": "hor"
         },
     mq3_prime: {"cycles": 2,      # nr of cycles (one cycle is one of each positions)
+          "center": [-150, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 1,
+          "disamb": "hor"
+        },
+    mq4_prime: {"cycles": 2,      # nr of cycles (one cycle is one of each positions)
+          "center": [0, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 1,
+          "disamb": "hor"
+        },
+    mq5_prime: {"cycles": 2,      # nr of cycles (one cycle is one of each positions)
           "center": [150, 0],
           "dot_size": 10,   # in px
           "dist_hor_start": 60,  # in px
@@ -956,8 +1142,26 @@ exp_expl_3:
           "start_cycle": 1,
           "disamb": "hor"
         },
+    mq6_prime: {"cycles": 2,      # nr of cycles (one cycle is one of each positions)
+          "center": [300, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 1,
+          "disamb": "hor"
+        },
+    mq7_prime: {"cycles": 2,      # nr of cycles (one cycle is one of each positions)
+          "center": [450, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 1,
+          "disamb": "hor"
+        },
     mq1_amb1: {"cycles": 8,      # nr of cycles (one cycle is one of each positions)
-          "center": [-150, 0],
+          "center": [-450, 0],
           "dot_size": 10,   # in px
           "dist_hor_start": 60,  # in px
           "dist_ver_start": 80,  # in px
@@ -965,7 +1169,7 @@ exp_expl_3:
           "start_cycle": 3,
         },
     mq2_amb1: {"cycles": 8,      # nr of cycles (one cycle is one of each positions)
-          "center": [0, 0],
+          "center": [-300, 0],
           "dot_size": 10,   # in px
           "dist_hor_start": 60,  # in px
           "dist_ver_start": 80,  # in px
@@ -973,7 +1177,39 @@ exp_expl_3:
           "start_cycle": 3,
         },
     mq3_amb1: {"cycles": 8,      # nr of cycles (one cycle is one of each positions)
+          "center": [-150, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 3,
+        },
+    mq4_amb1: {"cycles": 8,      # nr of cycles (one cycle is one of each positions)
+          "center": [0, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 3,
+        },
+    mq5_amb1: {"cycles": 8,      # nr of cycles (one cycle is one of each positions)
           "center": [150, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 3,
+        },
+    mq6_amb1: {"cycles": 8,      # nr of cycles (one cycle is one of each positions)
+          "center": [300, 0],
+          "dot_size": 10,   # in px
+          "dist_hor_start": 60,  # in px
+          "dist_ver_start": 80,  # in px
+          "init_pos": "ru", # left up (or ru)
+          "start_cycle": 3,
+        },
+    mq7_amb1: {"cycles": 8,      # nr of cycles (one cycle is one of each positions)
+          "center": [450, 0],
           "dot_size": 10,   # in px
           "dist_hor_start": 60,  # in px
           "dist_ver_start": 80,  # in px
@@ -983,7 +1219,7 @@ exp_expl_3:
     }
 
 
-exp_text_9:
+exp_expl_text_9:
   trial_identifier: "exp_text_9" # inst
   trial_type: "text"
   continue: "space"
@@ -1001,7 +1237,7 @@ exp_text_9:
           },
     }
 
-exp_text_10:
+exp_expl_text_10:
   trial_identifier: "exp_text_10" # inst
   trial_type: "text"
   continue: "space"
@@ -1019,7 +1255,7 @@ exp_text_10:
           },
     }
 
-exp_text_11:
+exp_expl_text_11:
   trial_identifier: "exp_text_11" # inst
   trial_type: "text"
   continue: "space"
@@ -1037,7 +1273,7 @@ exp_text_11:
           },
     }
 
-exp_text_12:
+exp_expl_text_12:
   trial_identifier: "exp_text_12" # inst
   trial_type: "text"
   continue: "space"
@@ -1055,7 +1291,7 @@ exp_text_12:
           },
     }
 
-exp_text_13:
+exp_expl_text_13:
   trial_identifier: "exp_text_13" # inst
   trial_type: "text"
   continue: "space"
@@ -1073,7 +1309,7 @@ exp_text_13:
           },
     }
 
-exp_text_14:
+exp_expl_text_14:
   trial_identifier: "exp_text_14" # inst
   trial_type: "text"
   continue: "space"
@@ -1091,7 +1327,7 @@ exp_text_14:
           },
     }
 
-exp_text_15:
+exp_expl_text_15:
   trial_identifier: "exp_text_15" # inst
   trial_type: "text"
   continue: "space"
@@ -1109,7 +1345,7 @@ exp_text_15:
           },
     }
 
-exp_text_16:
+exp_expl_text_16:
   trial_identifier: "exp_text_16" # inst
   trial_type: "text"
   continue: "space"
@@ -1127,7 +1363,7 @@ exp_text_16:
           },
     }
 
-exp_text_17:
+exp_expl_text_17:
   trial_identifier: "exp_text_17" # inst
   trial_type: "text"
   continue: "space"
@@ -1402,4 +1638,22 @@ main_exp:
           "init_pos": "ru", # left up (or ru)
           "start_cycle": 9,
         }
+    }
+
+exp_expl_complete_text:
+  trial_identifier: "exp_complete_text" # inst
+  trial_type: "text"
+  continue: "space"
+  texts: {"text":
+          {
+          content: "exp_complete_text",
+          pos: [0, 0],
+          size: 30
+          },
+        "continue_with_space":
+          {
+          content: "space_to_cont",
+          pos: [0, -200],
+          size: 25
+          },
     }

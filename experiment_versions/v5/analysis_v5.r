@@ -7,11 +7,11 @@ library(readr)
 library(dplyr)
 library(ggplot2)
 
-exp_version = "v4_3mqs"
+exp_version = "v5"
 
 data_folder = paste0("experiment_versions/", exp_version, "/logs_", exp_version, "/")
 
-subject = "011"
+subject = "test123"
 #subject = "test_daniel"
 
 
@@ -83,31 +83,29 @@ params_df %>% filter(disamb == "hor", cue_present == T) %>% nrow()
 # prime horizontal and cue left:
 params_df %>% filter(disamb == "hor", cue_present == T, side == "left") %>% nrow()
 
+# prime horizontal and cue left and cue onset 2:
+params_df %>% filter(disamb == "hor", cue_present == T, side == "left", cue_delay == 2) %>% nrow()
 # prime horizontal and cue left and cue onset 4:
 params_df %>% filter(disamb == "hor", cue_present == T, side == "left", cue_delay == 4) %>% nrow()
 # prime horizontal and cue left and cue onset 6:
 params_df %>% filter(disamb == "hor", cue_present == T, side == "left", cue_delay == 6) %>% nrow()
-# prime horizontal and cue left and cue onset 8:
-params_df %>% filter(disamb == "hor", cue_present == T, side == "left", cue_delay == 8) %>% nrow()
-# prime horizontal and cue left and cue onset 10:
-params_df %>% filter(disamb == "hor", cue_present == T, side == "left", cue_delay == 10) %>% nrow()
 
-# primed and cue onset 4:
+# primed and cue onset 2:
+params_df %>% filter(cue_present == T, cue_delay == 2) %>% nrow()
+# primes and cue onset 4:
 params_df %>% filter(cue_present == T, cue_delay == 4) %>% nrow()
 # primes and cue onset 6:
 params_df %>% filter(cue_present == T, cue_delay == 6) %>% nrow()
-# primes and cue onset 8:
-params_df %>% filter(cue_present == T, cue_delay == 8) %>% nrow()
 
 # prime horizontal and cue right:
 params_df %>% filter(disamb == "hor", cue_present == T, side == "right") %>% nrow()
 
+# prime horizontal and cue right and cue onset 2:
+params_df %>% filter(disamb == "hor", cue_present == T, side == "right", cue_delay == 2) %>% nrow()
 # prime horizontal and cue right and cue onset 4:
 params_df %>% filter(disamb == "hor", cue_present == T, side == "right", cue_delay == 4) %>% nrow()
 # prime horizontal and cue right and cue onset 6:
 params_df %>% filter(disamb == "hor", cue_present == T, side == "right", cue_delay == 6) %>% nrow()
-# prime horizontal and cue right and cue onset 8:
-params_df %>% filter(disamb == "hor", cue_present == T, side == "right", cue_delay == 8) %>% nrow()
 
 # prime vertical and cue:
 params_df %>% filter(disamb == "ver", cue_present == T) %>% nrow()
@@ -115,22 +113,22 @@ params_df %>% filter(disamb == "ver", cue_present == T) %>% nrow()
 # prime vertical and cue left:
 params_df %>% filter(disamb == "ver", cue_present == T, side == "left") %>% nrow()
 
+# prime vertical and cue left and cue onset 2:
+params_df %>% filter(disamb == "ver", cue_present == T, side == "left", cue_delay == 2) %>% nrow()
 # prime vertical and cue left and cue onset 4:
 params_df %>% filter(disamb == "ver", cue_present == T, side == "left", cue_delay == 4) %>% nrow()
 # prime vertical and cue left and cue onset 6:
 params_df %>% filter(disamb == "ver", cue_present == T, side == "left", cue_delay == 6) %>% nrow()
-# prime vertical and cue left and cue onset 8:
-params_df %>% filter(disamb == "ver", cue_present == T, side == "left", cue_delay == 8) %>% nrow()
 
 # prime vertical and cue right:
 params_df %>% filter(disamb == "ver", cue_present == T, side == "right") %>% nrow()
 
 # prime vertical and cue right and cue onset 4:
-params_df %>% filter(disamb == "ver", cue_present == T, side == "right", cue_delay == 4) %>% nrow()
+params_df %>% filter(disamb == "ver", cue_present == T, side == "right", cue_delay == 2) %>% nrow()
 # prime vertical and cue right and cue onset 6:
-params_df %>% filter(disamb == "ver", cue_present == T, side == "right", cue_delay == 6) %>% nrow()
+params_df %>% filter(disamb == "ver", cue_present == T, side == "right", cue_delay == 4) %>% nrow()
 # prime vertical and cue right and cue onset 8:
-params_df %>% filter(disamb == "ver", cue_present == T, side == "right", cue_delay == 8) %>% nrow()
+params_df %>% filter(disamb == "ver", cue_present == T, side == "right", cue_delay == 6) %>% nrow()
 
 params_df %>% head()
 events %>% head()
@@ -246,6 +244,8 @@ trial_durs %>%
     title = "Trial duration by cueing condition"
   )
 
+
+# change 0 time to ambiguous start!
 
 lm_1 <- lm(trial_duration_precise ~ condition, data = trial_durs)
 summary(lm_1)

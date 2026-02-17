@@ -9,6 +9,7 @@ exp_version = "v5"
 
 exp_folder_path = "experiment_versions/" + exp_version
 
+run_istruction = False
 
 exp_params, exp_texts = open_params(exp_folder_path)
 
@@ -306,21 +307,21 @@ class CascExpSession(Session):
             self.trial_params = exp_params[trial]
 
 
-            if "main_exp" in trial:
+            if trial == "main_exp":
 
-                reps_main_block = 10
+
 
                 # vars
 
                 vals_side = ["left", "right"]
 
-                #vals_disamb = ["hor", "ver", None, None]
-                vals_disamb = ["hor", "ver"]
+                vals_disamb = ["hor", "ver", None, None]
+                #vals_disamb = ["hor", "ver"]
 
                 n_cue = [1, 2, 3] # how many mqs are affected on one side 
 
-                #cue_present = [True, False]
-                cue_present = [True]
+                cue_present = [True, False]
+                #cue_present = [True]
 
                 timings = [2, 4, 6] # cycles
 
@@ -342,6 +343,13 @@ class CascExpSession(Session):
                         (x is None and w == 0)
                     )
                 ]
+
+                # Determines experiment duration
+
+                reps_main_block = 4
+                
+                self.trials_before_break = 20
+                self.break_counter = 0
 
                 for rep in range(reps_main_block):
 
@@ -384,7 +392,7 @@ class CascExpSession(Session):
 
                         #amb_2_dur = total_dur - amb_2_start
 
-                        amb_2_dur = 20 - cue_start
+                        amb_2_dur = 24 - cue_start
 
                         total_dur = amb_2_start + amb_2_dur
 
@@ -477,19 +485,31 @@ class CascExpSession(Session):
 
                         self.trial_params_output.append({self.trial_counter: trial_copy})
                         self.trial_counter += 1
+                        self.break_counter += 1
 
-                    if rep < (reps_main_block-1):
-                        self.exp_trials.append(
-                            TextTrial(self, trial_nr=self.trial_counter, params=self.break_text_trial_params)
-                        )
+                        # Insert break if this trial is a break position
+                        if self.break_counter == self.trials_before_break:
+                            self.exp_trials.append(
+                                TextTrial(self, trial_nr=self.trial_counter, params=self.break_text_trial_params)
+                            )
+                            self.trial_params_output.append({self.trial_counter: self.break_text_trial_params})
+                            self.trial_counter += 1
+                            self.break_counter = 0
 
-                        self.trial_params_output.append({self.trial_counter: self.break_text_trial_params})
-                        self.trial_counter += 1
+                    #self.trial_counter += 1
+
+                    # if rep < (reps_main_block-1):
+                    #     self.exp_trials.append(
+                    #         TextTrial(self, trial_nr=self.trial_counter, params=self.break_text_trial_params)
+                    #     )
+
+                    #     self.trial_params_output.append({self.trial_counter: self.break_text_trial_params})
+                    #     self.trial_counter += 1
 
 
 
 
-            elif "exp" in trial and self.trial_params["trial_type"] == "text":
+            elif "exp_expl" in trial and self.trial_params["trial_type"] == "text":
                 self.exp_trials.append(
                      TextTrial(self, trial_nr=self.trial_counter, params=self.trial_params)
                 )
@@ -498,7 +518,7 @@ class CascExpSession(Session):
 
                 self.trial_counter += 1
 
-            elif "exp" in trial and self.trial_params["trial_type"] == "stim":
+            elif "exp_expl" in trial and self.trial_params["trial_type"] == "stim":
 
                 phase_durations = [1/self.trial_params["freq"]] * self.trial_params["len_trial"] * 2
 
@@ -552,8 +572,11 @@ class CascExpSession(Session):
 
         self.create_inst_mml_trials()
 
-        for trial in self.inst_trials:
-            trial.run()
+        if run_istruction:
+            for trial in self.inst_trials:
+                trial.run()
+        else: 
+            self.output = [[[60, 60], [60, 60]]]
 
         self.show_loading_screen()
 
