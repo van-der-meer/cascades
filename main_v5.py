@@ -411,7 +411,8 @@ class CascExpSession(Session):
                                                 "amb_2_dur": amb_2_dur,
                                                 "cue_start": cue_start,
                                                 "cue_dur": cue_dur, 
-                                                "n_biased": combination[0]}
+                                                "n_biased": combination[0], 
+                                                "prime_start": prime_start}
 
 
 
