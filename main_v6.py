@@ -9,7 +9,7 @@ exp_version = "v5"
 
 exp_folder_path = "experiment_versions/" + exp_version
 
-run_istruction = True
+run_istruction = False
 
 exp_params, exp_texts = open_params(exp_folder_path)
 
@@ -305,6 +305,25 @@ class CascExpSession(Session):
         for trial in self.trial_names:
 
             self.trial_params = exp_params[trial]
+
+
+            if "pre_exp" in "main_exp":
+
+                trial_copy = copy.deepcopy(self.trial_params)
+
+                self.exp_trials.append(
+                            MQTrial(
+                                session=self,
+                                trial_nr=self.trial_counter,
+                                phase_durations=phase_durations,
+                                params=trial_copy,
+                                mml_distances=mml_distances
+                                )
+                                )
+
+                self.trial_params_output.append({self.trial_counter: trial_copy})
+                self.trial_counter += 1
+            
 
 
             if trial == "main_exp":
