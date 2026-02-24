@@ -346,7 +346,7 @@ class CascExpSession(Session):
 
                 # Determines experiment duration
 
-                reps_main_block = 4
+                reps_main_block = 5
                 
                 self.trials_before_break = 20
                 self.break_counter = 0
@@ -362,7 +362,7 @@ class CascExpSession(Session):
                         side = combination[1]
 
                         if not combination[2]:
-                            side = None
+                            side = "none"
 
                         if combination[2] == "hor":
                             disamb = "hor"
