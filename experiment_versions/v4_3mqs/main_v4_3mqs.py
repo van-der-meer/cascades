@@ -1,17 +1,16 @@
 import copy
 import numpy as np
-from functions_new import *
+from functions_v4_3mqs import *
 from psychopy import visual, core, event
 from exptools2.core import Trial, Session
 
+# Make sure the experiment main version matches the current folder
+file_path = os.path.abspath(__file__)
+validate_experiment_folder(file_path)
 
-exp_version = "v5"
+exp_version = os.path.basename(os.getcwd())
 
-exp_folder_path = "experiment_versions/" + exp_version
-
-run_istruction = True
-
-exp_params, exp_texts = open_params(exp_folder_path)
+exp_params, exp_texts = open_params()
 
 
 class MQTrial(Trial):
@@ -53,11 +52,7 @@ class MQTrial(Trial):
 
         self.quartets = []
 
-        self.colors = []
-
         for mq_pars in self.params["mqs"].values():
-
-            self.colors.extend([mq_pars.get("color", [1, 1, 1])] * mq_pars.get("n_dots", 2))
 
             if isinstance(self.mml_distances, np.ndarray):
                 mq_pars["dist_hor_start"] = self.mml_distances[0]
@@ -71,12 +66,7 @@ class MQTrial(Trial):
         self.stims = []
 
         for frame in self.concatenated:
-            #coords = frame[~np.isnan(frame).all(axis=1)]
-
-            mask = ~np.isnan(frame).all(axis=1)
-            coords = frame[mask]
-            colors = np.array(self.colors)[mask]
-
+            coords = frame[~np.isnan(frame).all(axis=1)]
 
             if coords.shape[0] == 0:
                 # Create "empty" stim by putting a single element off-screen
@@ -95,7 +85,7 @@ class MQTrial(Trial):
                     sfs=0,               # spatial frequency 0 = filled circles
                     elementTex=None,     # use disk instead of texture
                     elementMask='circle',
-                    colors=colors,     # single RGB color for all dots
+                    colors=[1, 1, 1],     # single RGB color for all dots
                     colorSpace='rgb'
                 )
             )
@@ -150,6 +140,7 @@ class TextTrial(Trial):
         self.button = self.params.get("continue")
 
         self.create_trial()
+
 
     def create_trial(self):
         """Create the PsychoPy TextStim."""
@@ -297,7 +288,7 @@ class CascExpSession(Session):
 
         mml_distances = np.mean(np.abs(self.output), axis = 0)[0]
 
-        mml_distances = mml_distances * 0.8 # scale this up or down a bit
+        mml_distances = mml_distances * 1 # scale this up or down a bit
 
 
         self.break_text_trial_params = exp_params["break_text"] # unelegant...
@@ -307,49 +298,37 @@ class CascExpSession(Session):
             self.trial_params = exp_params[trial]
 
 
-            if trial == "main_exp":
+            if "main_exp" in trial:
 
-
+                reps_main_block = 10
 
                 # vars
 
-                vals_side = ["left", "right"]
+                vals_side = [0, -1]
 
-                vals_disamb = ["hor", "ver", None]
-                #vals_disamb = ["hor", "ver"]
-
-                n_cue = [1, 2, 3] # how many mqs are affected on one side 
+                vals_disamb = ["hor", "ver", None, None]
 
                 cue_present = [True, False]
-                #cue_present = [True]
 
-                timings = [2, 4, 6] # cycles (1 cycle is 2 phases a 0.2s)
+                timings = [2, 4, 6, 8] # cycles
 
                 #combinations = [(w, x, y, z) for w in vals_side for x in vals_disamb for y in timings for z in cue_present]
 
                 # should balance classes by preventing too many conditions without prime
                 combinations = [
-                    (v, w, x, y, z)
-                    for v in n_cue
+                    (w, x, y, z)
                     for w in vals_side
                     for x in vals_disamb
                     for y in timings
                     for z in cue_present
                     if not (
                         (x is None and z is True) or
-                        (x is None and z is False and y in [2, 4]) or
-                        (x == "hor" and z is False and (w == 0 or y in [2, 4])) or
-                        (x == "ver" and z is False and (w == 0 or y in [2, 4])) or
+                        (x is None and z is False and y in [4, 6]) or
+                        (x == "hor" and z is False and (w == 0 or y in [8, 10])) or
+                        (x == "ver" and z is False and (w == 0 or y in [8, 10])) or
                         (x is None and w == 0)
                     )
                 ]
-
-                # Determines experiment duration
-
-                reps_main_block = 5
-                
-                self.trials_before_break = 20
-                self.break_counter = 0
 
                 for rep in range(reps_main_block):
 
@@ -359,14 +338,14 @@ class CascExpSession(Session):
 
                         trial_copy = copy.deepcopy(self.trial_params)
 
-                        side = combination[1]
+                        if combination[0] == 0:
+                            side = "left"
+                        else:
+                            side = "right"
 
-                        if not combination[2]:
-                            side = "none"
-
-                        if combination[2] == "hor":
+                        if combination[1] == "hor":
                             disamb = "hor"
-                        elif combination[2] == "ver":
+                        elif combination[1] == "ver":
                             disamb = "ver"
                         else:
                             disamb = "none"
@@ -380,24 +359,22 @@ class CascExpSession(Session):
                         cue_idxs = np.where(["cue" in x for x in mq_idxs])[0]
                         amb2_idxs = np.where(["amb2" in x for x in mq_idxs])[0]
 
-                        # once cycle is 2 phases
+                        prime_start = 4
+                        cycles_prime = 2
 
-                        prime_start = 4  # 4 cycles = 8 * 0.2 s = 1.6 s
-                        cycles_prime = 2 # 2 cycles = 4 * 0.2 s = 0.8 s
+                        amb_1_start = prime_start + cycles_prime
 
-                        amb_1_start = prime_start + cycles_prime # 2.4 s
-
-                        amb_1_dur = combination[3]
+                        amb_1_dur = combination[2]
 
                         cue_start = amb_1_dur + amb_1_start # 2 cycles prime
 
-                        cue_dur = 8
+                        cue_dur = 4
 
                         amb_2_start = cue_start + cue_dur
 
                         #amb_2_dur = total_dur - amb_2_start
 
-                        amb_2_dur = 24 - cue_start
+                        amb_2_dur = 14
 
                         total_dur = amb_2_start + amb_2_dur
 
@@ -406,43 +383,25 @@ class CascExpSession(Session):
 
                         trial_copy["params"] = {"side": side,
                                                 "disamb": disamb,
-                                                "cue_present": combination[4],
-                                                "cue_delay": combination[3],
+                                                "cue_present": combination[3],
+                                                "cue_delay": combination[2],
                                                 "trial_nr": self.trial_counter,
                                                 "prime_start": prime_start,
                                                 "cycles_prime": cycles_prime,
                                                 "amb_1_start": amb_1_start,
                                                 "amb_2_start": amb_2_start,
                                                 "amb_2_dur": amb_2_dur,
-                                                "total_dur": amb_2_start + amb_2_dur,
                                                 "cue_start": cue_start,
-                                                "cue_dur": cue_dur, 
-                                                "n_biased": combination[0], 
-                                                "prime_start": prime_start}
+                                                "cue_dur": cue_dur}
 
 
 
-                        if combination[2] == "hor":
-                            #cue_dir = "ver"
-                            cue_dist_hor =  mml_distances[0] * 1.75
-                            cue_dist_ver =  mml_distances[1] * 1/1.75
-                            
-                            for mq in mq_idxs:
-                                trial_copy["mqs"][mq]["dist_hor_start"] = mml_distances[0]# * 0.95
-                                trial_copy["mqs"][mq]["dist_ver_start"] = mml_distances[1]# * 1.05
-
-                        elif combination[2] == "ver":
-                            #cue_dir = "hor"
-                            cue_dist_hor =  mml_distances[0] * 1/1.75
-                            cue_dist_ver =  mml_distances[1] * 1.75
-                            for mq in mq_idxs:
-                                trial_copy["mqs"][mq]["dist_hor_start"] = mml_distances[0]# * 1.05
-                                trial_copy["mqs"][mq]["dist_ver_start"] = mml_distances[1]# * 0.95
+                        if combination[1] == "hor":
+                            cue_dir = "ver"
+                        elif combination[1] == "ver":
+                            cue_dir = "hor"
                         else:
-                            for mq in mq_idxs:
-                                trial_copy["mqs"][mq]["dist_hor_start"] = mml_distances[0]
-                                trial_copy["mqs"][mq]["dist_ver_start"] = mml_distances[1]
-                            #cue_dir = None
+                            cue_dir = None
 
 
                         
@@ -451,7 +410,7 @@ class CascExpSession(Session):
                         for prime in prime_idxs:
                             trial_copy["mqs"][mq_idxs[prime]]["start_cycle"] = prime_start
                             trial_copy["mqs"][mq_idxs[prime]]["cycles"] = cycles_prime
-                            trial_copy["mqs"][mq_idxs[prime]]["disamb"] = combination[2]
+                            trial_copy["mqs"][mq_idxs[prime]]["disamb"] = combination[1]
 
                         for amb1_idx in amb1_idxs:
                             trial_copy["mqs"][mq_idxs[amb1_idx]]["start_cycle"] = amb_1_start
@@ -461,17 +420,10 @@ class CascExpSession(Session):
                             trial_copy["mqs"][mq_idxs[cue_idx]]["start_cycle"] = cue_start
                             trial_copy["mqs"][mq_idxs[cue_idx]]["cycles"] = cue_dur
 
-                        if combination[4]:
-                            #trial_copy["mqs"][mq_idxs[cue_idxs[combination[1]]]]["disamb"] = cue_dir
-
-                            if combination[1] == "left":
-                                cue_idxs_screen = cue_idxs[:combination[0]]
-                            else:
-                                cue_idxs_screen = cue_idxs[-combination[0]:]
-
-                            for cue_idx_screen in cue_idxs_screen:
-                                trial_copy["mqs"][mq_idxs[cue_idx_screen]]["dist_hor_start"] = cue_dist_hor
-                                trial_copy["mqs"][mq_idxs[cue_idx_screen]]["dist_ver_start"] = cue_dist_ver
+                        if combination[3]:
+                            trial_copy["mqs"][mq_idxs[cue_idxs[combination[0]]]]["disamb"] = cue_dir
+                        else:
+                            trial_copy["mqs"][mq_idxs[cue_idxs[combination[0]]]]["disamb"] = None
 
                         for amb2_idx in amb2_idxs:
                             trial_copy["mqs"][mq_idxs[amb2_idx]]["start_cycle"] = amb_2_start
@@ -486,38 +438,26 @@ class CascExpSession(Session):
                                 session=self,
                                 trial_nr=self.trial_counter,
                                 phase_durations=phase_durations,
-                                params=trial_copy#,
-                                #mml_distances=mml_distances
+                                params=trial_copy,
+                                mml_distances=mml_distances
                                 )
                                 )
 
                         self.trial_params_output.append({self.trial_counter: trial_copy})
                         self.trial_counter += 1
-                        self.break_counter += 1
 
-                        # Insert break if this trial is a break position
-                        if self.break_counter == self.trials_before_break:
-                            self.exp_trials.append(
-                                TextTrial(self, trial_nr=self.trial_counter, params=self.break_text_trial_params)
-                            )
-                            self.trial_params_output.append({self.trial_counter: self.break_text_trial_params})
-                            self.trial_counter += 1
-                            self.break_counter = 0
+                    if rep < (reps_main_block-1):
+                        self.exp_trials.append(
+                            TextTrial(self, trial_nr=self.trial_counter, params=self.break_text_trial_params)
+                        )
 
-                    #self.trial_counter += 1
-
-                    # if rep < (reps_main_block-1):
-                    #     self.exp_trials.append(
-                    #         TextTrial(self, trial_nr=self.trial_counter, params=self.break_text_trial_params)
-                    #     )
-
-                    #     self.trial_params_output.append({self.trial_counter: self.break_text_trial_params})
-                    #     self.trial_counter += 1
+                        self.trial_params_output.append({self.trial_counter: self.break_text_trial_params})
+                        self.trial_counter += 1
 
 
 
 
-            elif "exp_expl" in trial and self.trial_params["trial_type"] == "text":
+            elif "exp" in trial and self.trial_params["trial_type"] == "text":
                 self.exp_trials.append(
                      TextTrial(self, trial_nr=self.trial_counter, params=self.trial_params)
                 )
@@ -526,7 +466,7 @@ class CascExpSession(Session):
 
                 self.trial_counter += 1
 
-            elif "exp_expl" in trial and self.trial_params["trial_type"] == "stim":
+            elif "exp" in trial and self.trial_params["trial_type"] == "stim":
 
                 phase_durations = [1/self.trial_params["freq"]] * self.trial_params["len_trial"] * 2
 
@@ -580,11 +520,8 @@ class CascExpSession(Session):
 
         self.create_inst_mml_trials()
 
-        if run_istruction:
-            for trial in self.inst_trials:
-                trial.run()
-        else: 
-            self.output = [[[60, 60], [60, 60]]]
+        for trial in self.inst_trials:
+            trial.run()
 
         self.show_loading_screen()
 
@@ -598,7 +535,7 @@ class CascExpSession(Session):
 # Run experiment
 # --------------------------------------------------
 
-subject_id, subject_dir = create_subject_dir(exp_folder_path, exp_version) #create subject directory for data storage
+subject_id, subject_dir = create_subject_dir(exp_version) #create subject directory for data storage
 
 if __name__ == '__main__':
     my_sess = CascExpSession(subject_id, subject_dir, 'settings.yml')

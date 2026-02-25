@@ -1,7 +1,28 @@
 import os
+import sys
 import yaml
 import json
 import numpy as np
+
+def validate_experiment_folder(file_path):
+    file_name = os.path.splitext(os.path.basename(file_path))[0]
+
+    # Ensure filename ends with "main"
+    if not file_name.startswith("main"):
+        print(f"ERROR: File '{file_name}.py' must start with 'main'.")
+        sys.exit(1)
+
+    expected_folder_name = file_name[5:]  # remove trailing "main"
+    #parent_folder_name = os.path.basename(os.path.dirname(file_path))
+    current_path = os.path.basename(os.getcwd())
+
+    if current_path != expected_folder_name:
+        print(
+            f"ERROR: Folder name mismatch.\n"
+            f"Expected folder: '{expected_folder_name}'\n"
+            f"Actual folder:   '{current_path}'"
+        )
+        sys.exit(1)
 
 def mq(params: dict, mml_distances = None):
 
@@ -98,22 +119,22 @@ def pad_frames(mqs, trial_params):
 
     return frames_out
 
-def find_file(folder_path, pattern):
+def find_file(pattern):
     files_with_params = [
-        f for f in os.listdir(folder_path)
-        if os.path.isfile(os.path.join(folder_path, f)) and pattern in f
+        f for f in os.listdir()
+        if os.path.isfile(f) and pattern in f
     ]
     return files_with_params[0]
 
 
-def open_params(folder_path):
+def open_params():
     # Get experiment parameters
 
-    params_file = find_file(folder_path, "params")
-    text_file = find_file(folder_path, "texts")
+    params_file = find_file("params")
+    text_file = find_file("texts")
 
-    params_file_path = folder_path + "/" + params_file
-    texts_file_path = folder_path + "/" + text_file
+    params_file_path = params_file
+    texts_file_path = text_file
 
     with open(params_file_path, 'r') as file:
         exp_params = yaml.safe_load(file)
@@ -125,12 +146,12 @@ def open_params(folder_path):
     return exp_params, exp_texts
 
 
-def create_subject_dir(exp_folder, exp_version):
+def create_subject_dir(exp_version):
     # Create subject dir
     exit = False 
     while not exit:
         subject_id = input("Enter subject ID:")
-        subject_dir = exp_folder + "/logs_" + exp_version + "/" + subject_id
+        subject_dir = "logs_" + exp_version + "/" + subject_id
 
         if os.path.isdir(subject_dir):
             print("Please enter a subject ID that has not been used yet or delete the corresponsing directory if not in use!")

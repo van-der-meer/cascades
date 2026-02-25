@@ -17,9 +17,9 @@ data_folder = paste0("experiment_versions/", exp_version, "/logs_", exp_version,
 subjects <- list.dirs(data_folder, full.names = FALSE, recursive = FALSE)
 subjects <- subjects[!grepl("aborted", subjects)]
 
-subjects = c("021", "022")
+subjects = c("021", "022", "023")
 
-subjects = "021"
+#subjects = "023"
 
 # pp_df = get_pp_data(subject = subject)
 # 
@@ -87,7 +87,9 @@ trial_durs_filtered = trial_durs %>%
   )
 
 trial_durs_filtered %>%
-  filter(n_biased == 3) %>% 
+  filter(n_biased == 3) %>%
+  #filter(side == "right") %>% 
+  filter(disamb == "ver") %>%
   ggplot(aes(x = condition, y = trial_duration_precise)) +
   geom_violin(trim = FALSE, alpha = 0.6) +
   geom_jitter(
@@ -123,60 +125,18 @@ summary(lm_1)
 library(BayesFactor)
 
 
-trial_durs_filtered = trial_durs %>% 
+trial_durs_filtered_test = trial_durs %>% 
   filter(disamb != "none") %>% 
   filter(n_biased == 3) 
 
 
 bf_anova <- anovaBF(
   trial_duration_precise ~ condition,
-  data = trial_durs_filtered
+  data = trial_durs_filtered_test
 )
 
 bf_anova
 
 
 
-
-
-
-# no prime no cue:
-trial_durs %>% filter(disamb == "none", cue_present == F) %>% nrow() 
-
-# prime horizontal no cue:
-trial_durs %>% filter(disamb == "hor", cue_present == F) %>% nrow()
-
-# prime vertical no cue:
-trial_durs %>% filter(disamb == "ver", cue_present == F) %>% nrow()
-
-# prime horizontal and cue:
-trial_durs %>% filter(disamb == "hor", cue_present == T) %>% nrow()
-
-# prime horizontal and cue left:
-trial_durs %>% filter(disamb == "hor", cue_present == T, side == "left") %>% nrow()
-
-# prime horizontal and cue right:
-trial_durs %>% filter(disamb == "hor", cue_present == T, side == "right") %>% nrow()
-
-# prime horizontal and cue left and cue onset 2:
-trial_durs %>% filter(disamb == "hor", cue_present == T, side == "left", cue_delay == 2) %>% nrow()
-# prime horizontal and cue left and cue onset 4:
-trial_durs %>% filter(disamb == "hor", cue_present == T, side == "left", cue_delay == 4) %>% nrow()
-# prime horizontal and cue left and cue onset 6:
-trial_durs %>% filter(disamb == "hor", cue_present == T, side == "left", cue_delay == 6) %>% nrow()
-
-trial_durs %>% filter(disamb == "hor", cue_present == T, side == "left", cue_delay == 2, n_biased == 1) %>% nrow()
-
-trial_durs %>% filter(disamb == "hor", cue_present == T, side == "left", cue_delay == 2, n_biased == 2) %>% nrow()
-
-trial_durs %>% filter(disamb == "hor", cue_present == T, side == "left", cue_delay == 2, n_biased == 3) %>% nrow()
-
-
-library(dplyr)
-library(tidyr)
-
-
-
-
-
-
+#summarise_design_cells(trial_durs_filtered)

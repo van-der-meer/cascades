@@ -625,61 +625,6 @@ inst_mml:
     }
 
 
-
-
-pre_exp_1:
-  trial_identifier: "pre_exp_1"    # exp
-  len_trial: 500
-  trial_type: "stim"
-  freq: 5         # frequency of alternations
-  mqs: {
-    mq1: {"type": "mq",
-        "cycles": 500,      # nr of cycles (one cycle is one of each positions)
-        "center": [0, 0],
-        "dot_size": 10,   # in px
-        "dist_hor_start": 80,  # in px
-        "dist_ver_start": 100,  # in px
-        "init_pos": "ru", # left up (or ru)
-        "start_cycle": 0
-        }
-    }
-
-pre_exp_2:
-  trial_identifier: "pre_exp_2"    # exp
-  len_trial: 500
-  trial_type: "stim"
-  freq: 5         # frequency of alternations
-  mqs: {
-    mq1: {"type": "mq",
-        "cycles": 500,      # nr of cycles (one cycle is one of each positions)
-        "center": [-150, 0],
-        "dot_size": 10,   # in px
-        "dist_hor_start": 80,  # in px
-        "dist_ver_start": 100,  # in px
-        "init_pos": "ru", # left up (or ru)
-        "start_cycle": 0
-        },
-    mq2: {"type": "mq",
-        "cycles": 500,      # nr of cycles (one cycle is one of each positions)
-        "center": [0, 0],
-        "dot_size": 10,   # in px
-        "dist_hor_start": 80,  # in px
-        "dist_ver_start": 100,  # in px
-        "init_pos": "ru", # left up (or ru)
-        "start_cycle": 0
-        },
-    mq3: {"type": "mq",
-        "cycles": 500,      # nr of cycles (one cycle is one of each positions)
-        "center": [150, 0],
-        "dot_size": 10,   # in px
-        "dist_hor_start": 80,  # in px
-        "dist_ver_start": 100,  # in px
-        "init_pos": "ru", # left up (or ru)
-        "start_cycle": 0
-        }
-    }
-
-
 exp_expl_text_1:
   trial_identifier: "exp_text_1" # inst
   trial_type: "text"

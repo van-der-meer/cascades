@@ -31,8 +31,10 @@ get_pp_data = function(subject){
   
   params_df = data.frame(
     main_trial_ids,
-    side = unlist(lapply(main_trials, function(x)
-      x$params$side)),
+    side = unlist(lapply(main_trials, function(x) {
+      val <- x$params$side
+      if (is.null(val)) "none" else val
+    })),
     disamb = unlist(lapply(main_trials, function(x)
       x$params$disamb)),
     cue_present = unlist(lapply(main_trials, function(x)

@@ -19,7 +19,7 @@ subjects <- subjects[!grepl("aborted", subjects)]
 
 subjects = c("021", "022", "023")
 
-subjects = "023"
+#subjects = "023"
 
 # pp_df = get_pp_data(subject = subject)
 # 
@@ -87,7 +87,9 @@ trial_durs_filtered = trial_durs %>%
   )
 
 trial_durs_filtered %>%
-  filter(n_biased == 3) %>% 
+  filter(n_biased == 3) %>%
+  #filter(side == "right") %>% 
+  filter(disamb == "ver") %>%
   ggplot(aes(x = condition, y = trial_duration_precise)) +
   geom_violin(trim = FALSE, alpha = 0.6) +
   geom_jitter(
@@ -123,18 +125,18 @@ summary(lm_1)
 library(BayesFactor)
 
 
-trial_durs_filtered = trial_durs %>% 
+trial_durs_filtered_test = trial_durs %>% 
   filter(disamb != "none") %>% 
   filter(n_biased == 3) 
 
 
 bf_anova <- anovaBF(
   trial_duration_precise ~ condition,
-  data = trial_durs_filtered
+  data = trial_durs_filtered_test
 )
 
 bf_anova
 
 
 
-summarise_design_cells(trial_durs_filtered)
+#summarise_design_cells(trial_durs_filtered)
