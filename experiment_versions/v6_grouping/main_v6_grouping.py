@@ -319,14 +319,17 @@ class CascExpSession(Session):
 
             if trial == "main_exp_grouping":
 
-                reps = 2
+                reps = 1
 
                 n_mqs = [1, 9] * reps
 
                 frequencies = [3, 5, 7]
 
+                fixation = [True, False]
+
                 combinations_grouping = [
-                            (y, z)
+                            (x, y, z)
+                            for x in fixation
                             for y in n_mqs
                             for z in frequencies
                             ]
@@ -337,9 +340,10 @@ class CascExpSession(Session):
 
                     trial_copy = copy.deepcopy(self.trial_params)
 
-                    trial_copy["freq"] = combin[1]
+                    trial_copy["freq"] = combin[2]
+                    trial_copy["fixation"] = combin[0]
 
-                    if combin[0] == 9:
+                    if combin[1] == 9:
 
                         mq_keys = list(trial_copy["mqs"])
 
@@ -378,8 +382,9 @@ class CascExpSession(Session):
                                     )
 
                     trial_copy["params"] = {"id": "exp_grouping",
-                                            "freq": combin[1],
-                                            "n_mqs": combin[0],
+                                            "freq": combin[2],
+                                            "n_mqs": combin[1],
+                                            "fixation": fixation[0],
                                             "trial_nr": self.trial_counter
                                             }
 
