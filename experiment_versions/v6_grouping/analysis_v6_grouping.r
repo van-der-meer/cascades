@@ -7,6 +7,11 @@ library(readr)
 library(dplyr)
 library(ggplot2)
 
+
+## WARNING file names have changed! not exp_params anymore but exp_flow/ inst_flow!
+
+## Change folder to experiment version! 
+
 exp_version = "v5"
 
 # Load helper functions

@@ -9,11 +9,11 @@ from exptools2.core import Trial, Session
 file_path = os.path.abspath(__file__)
 validate_experiment_folder(file_path)
 
-run_istruction = True
+run_istruction = False 
 
 exp_version = os.path.basename(os.getcwd())
 
-exp_params, exp_texts = open_params()
+exp_flow, exp_params, exp_texts = open_params()
 
 
 class MQTrial(Trial):
@@ -135,7 +135,7 @@ class MQTrial(Trial):
 class TextTrial(Trial):
     """A trial that shows some text and waits for space press."""
 
-    def __init__(self, session, trial_nr, params):
+    def __init__(self, session, trial_nr, params, texts):
         # This trial has one phase of arbitrary length (we ignore duration)
         super().__init__(
             session=session,
@@ -146,6 +146,7 @@ class TextTrial(Trial):
         )
 
         self.params = params
+        self.exp_texts = texts
 
         self.text_stims = []
 
@@ -190,7 +191,7 @@ class TextTrial(Trial):
 
 class CascExpSession(Session):
 
-    def __init__(self, output_str, output_dir, settings_file):
+    def __init__(self, output_str, output_dir, settings_file, exp_flow, exp_params, exp_texts):
         super().__init__(output_str, output_dir, settings_file)
 
         self.inst_trials = []
@@ -198,24 +199,34 @@ class CascExpSession(Session):
         self.output = []
         self.trial_params_output = []
         self.trial_counter = 1
+        self.exp_flow = exp_flow
+        self.exp_params = exp_params
+        self.exp_texts = exp_texts
+
+        output_name_params = self.output_dir + "/" + self.output_str + "_exp_params.json"
+
+        with open(output_name_params, "w") as f:
+            json.dump(self.exp_params, f, indent=4)
 
     def create_inst_mml_trials(self):
         """Create all trials before running the experiment."""
 
-        self.trial_names = list(exp_params)
+        self.trial_names = list(self.exp_flow)
 
         for trial in self.trial_names:
 
-            self.trial_params = exp_params[trial]
+            self.trial_params = self.exp_flow[trial]
 
             if "mml" in trial:
 
                 n_mml_reps = 4          # should be n / 2
 
-                base_distance = 100
-                mml_dist = 60
+                n_mml_reps = self.exp_params["mml_params"]["n_reps"]
+                    
+                base_distance = self.exp_params["mml_params"]["base_dist_mml_trials"]
+                mml_dist = self.exp_params["mml_params"]["max_mml_stretch"]
                 mml_multipliers = [-1, 1] * n_mml_reps
-                mml_durs = [14, 16, 18, 20] * 2  # should be n
+                mml_durs = self.exp_params["mml_params"]["durs_mml_trials"] * 2  # should be n
                 mml_idx = np.arange(0, n_mml_reps * 2)
 
                 np.random.shuffle(mml_idx)
@@ -263,7 +274,7 @@ class CascExpSession(Session):
 
             elif "inst" in trial and self.trial_params["trial_type"] == "text":
                 self.inst_trials.append(
-                     TextTrial(self, trial_nr=self.trial_counter, params=self.trial_params)
+                     TextTrial(self, trial_nr=self.trial_counter, params=self.trial_params, texts=self.exp_texts)
                 )
 
                 self.trial_params_output.append({self.trial_counter: self.trial_params})
@@ -286,7 +297,7 @@ class CascExpSession(Session):
 
                 self.trial_counter += 1
 
-        output_name = self.output_dir + "/" + self.output_str + "_inst_params.json"
+        output_name = self.output_dir + "/" + self.output_str + "_inst_flow.json"
 
         with open(output_name, "w") as f:
             json.dump(self.trial_params_output, f, indent=4)
@@ -295,23 +306,98 @@ class CascExpSession(Session):
         """Create all trials before running the experiment."""
 
 
-        self.trial_names = list(exp_params)
+        self.trial_names = list(self.exp_flow)
 
-        mml_distances = np.mean(np.abs(self.output), axis = 0)[0]
+        self.mml_distances = np.mean(np.abs(self.output), axis = 0)[0]
 
-        mml_distances = mml_distances * 0.8 # scale this up or down a bit
+        self.mml_distances = self.mml_distances * 0.8 # scale this up or down a bit
 
 
-        self.break_text_trial_params = exp_params["break_text"] # unelegant...
+        self.break_text_trial_params = self.exp_flow["break_text"] # unelegant...
 
         for trial in self.trial_names:
 
-            self.trial_params = exp_params[trial]
+            self.trial_params = self.exp_flow[trial]
+
+            if trial == "main_exp_grouping":
+
+                reps = 2
+
+                n_mqs = [1, 9] * reps
+                
+                frequencies = [3, 5, 7]
+
+                combinations_grouping = [
+                            (y, z)
+                            for y in n_mqs
+                            for z in frequencies
+                            ]
+
+                np.random.shuffle(combinations_grouping)
+
+                for combin in combinations_grouping: 
+
+                    trial_copy = copy.deepcopy(self.trial_params)
+
+                    trial_copy["freq"] = combin[1]
+
+                    if combin[0] == 9:
+
+                        mq_keys = list(trial_copy["mqs"])
+
+                        mq_params = trial_copy["mqs"][mq_keys[0]]
+                        
+                        trial_copy["mqs"].pop(mq_keys[0])
+
+                        spacing = 150
+                        coords_1d = np.linspace(-spacing, spacing, 3)
+
+                        x, y = np.meshgrid(coords_1d, coords_1d)
+
+                        grid = np.column_stack([x.ravel(), y.ravel()])
+
+                        for mq in range(len(grid)):
+                            new_mq = copy.deepcopy(mq_params)   # create fresh copy
+                            new_mq["center"] = grid[mq].tolist()
+                            trial_copy["mqs"][str(mq)] = new_mq
+
+                    trial_copy["trial_nr"] = self.trial_counter
+
+                    trial_copy["len_trial"] = 30 * trial_copy["freq"] + 2
+
+                    phase_durations = [1/trial_copy["freq"]] * trial_copy["len_trial"] * 2
+
+                    distances_grouping = self.mml_distances * 0.9
+
+                    self.exp_trials.append(
+                                MQTrial(
+                                    session=self,
+                                    trial_nr=self.trial_counter,
+                                    phase_durations=phase_durations,
+                                    params=trial_copy,
+                                    mml_distances=distances_grouping
+                                    )
+                                    )
+                    
+                    trial_copy["params"] = {"id": "exp_grouping", 
+                                            "freq": combin[1], 
+                                            "n_mqs": combin[0], 
+                                            "trial_nr": self.trial_counter
+                                            }
+
+                    self.trial_params_output.append({self.trial_counter: trial_copy})
+                    self.trial_counter += 1
+
+                    self.exp_trials.append(
+                                TextTrial(self, trial_nr=self.trial_counter, params=self.break_text_trial_params, texts = self.exp_texts)
+                            )
+                    self.trial_params_output.append({self.trial_counter: self.break_text_trial_params})
+                    self.trial_counter += 1
+
+
 
 
             if trial == "main_exp":
-
-
 
                 # vars
 
@@ -348,12 +434,12 @@ class CascExpSession(Session):
 
                 # Determines experiment duration
 
-                reps_main_block = 5
+                reps_per_cell = self.exp_params["main_params"]["reps_per_cell"]
                 
                 self.trials_before_break = 20
                 self.break_counter = 0
 
-                for rep in range(reps_main_block):
+                for rep in range(reps_per_cell):
 
                     np.random.shuffle(combinations)
 
@@ -406,7 +492,8 @@ class CascExpSession(Session):
                         trial_copy["len_trial"] = total_dur
 
 
-                        trial_copy["params"] = {"side": side,
+                        trial_copy["params"] = {"id": "exp_casc",
+                                                "side": side,
                                                 "disamb": disamb,
                                                 "cue_present": combination[4],
                                                 "cue_delay": combination[3],
@@ -426,24 +513,24 @@ class CascExpSession(Session):
 
                         if combination[2] == "hor":
                             #cue_dir = "ver"
-                            cue_dist_hor =  mml_distances[0] * 1.75
-                            cue_dist_ver =  mml_distances[1] * 1/1.75
+                            cue_dist_hor =  self.mml_distances[0] * 1.75
+                            cue_dist_ver =  self.mml_distances[1] * 1/1.75
                             
                             for mq in mq_idxs:
-                                trial_copy["mqs"][mq]["dist_hor_start"] = mml_distances[0]# * 0.95
-                                trial_copy["mqs"][mq]["dist_ver_start"] = mml_distances[1]# * 1.05
+                                trial_copy["mqs"][mq]["dist_hor_start"] = self.mml_distances[0]# * 0.95
+                                trial_copy["mqs"][mq]["dist_ver_start"] = self.mml_distances[1]# * 1.05
 
                         elif combination[2] == "ver":
                             #cue_dir = "hor"
-                            cue_dist_hor =  mml_distances[0] * 1/1.75
-                            cue_dist_ver =  mml_distances[1] * 1.75
+                            cue_dist_hor =  self.mml_distances[0] * 1/1.75
+                            cue_dist_ver =  self.mml_distances[1] * 1.75
                             for mq in mq_idxs:
-                                trial_copy["mqs"][mq]["dist_hor_start"] = mml_distances[0]# * 1.05
-                                trial_copy["mqs"][mq]["dist_ver_start"] = mml_distances[1]# * 0.95
+                                trial_copy["mqs"][mq]["dist_hor_start"] = self.mml_distances[0]# * 1.05
+                                trial_copy["mqs"][mq]["dist_ver_start"] = self.mml_distances[1]# * 0.95
                         else:
                             for mq in mq_idxs:
-                                trial_copy["mqs"][mq]["dist_hor_start"] = mml_distances[0]
-                                trial_copy["mqs"][mq]["dist_ver_start"] = mml_distances[1]
+                                trial_copy["mqs"][mq]["dist_hor_start"] = self.mml_distances[0]
+                                trial_copy["mqs"][mq]["dist_ver_start"] = self.mml_distances[1]
                             #cue_dir = None
 
 
@@ -500,7 +587,7 @@ class CascExpSession(Session):
                         # Insert break if this trial is a break position
                         if self.break_counter == self.trials_before_break:
                             self.exp_trials.append(
-                                TextTrial(self, trial_nr=self.trial_counter, params=self.break_text_trial_params)
+                                TextTrial(self, trial_nr=self.trial_counter, params=self.break_text_trial_params, texts = self.exp_texts)
                             )
                             self.trial_params_output.append({self.trial_counter: self.break_text_trial_params})
                             self.trial_counter += 1
@@ -521,7 +608,7 @@ class CascExpSession(Session):
 
             elif "exp_expl" in trial and self.trial_params["trial_type"] == "text":
                 self.exp_trials.append(
-                     TextTrial(self, trial_nr=self.trial_counter, params=self.trial_params)
+                     TextTrial(self, trial_nr=self.trial_counter, params=self.trial_params, texts=self.exp_texts)
                 )
 
                 self.trial_params_output.append({self.trial_counter: self.trial_params})
@@ -538,16 +625,16 @@ class CascExpSession(Session):
                         trial_nr=self.trial_counter,
                         phase_durations=phase_durations,
                         params=self.trial_params,
-                        mml_distances=mml_distances)
+                        mml_distances=self.mml_distances)
                         )
 
                 self.trial_params_output.append({self.trial_counter: self.trial_params})
 
                 self.trial_counter += 1
 
-        output_name = self.output_dir + "/" + self.output_str + "_exp_params.json"
+        output_name = self.output_dir + "/" + self.output_str + "_exp_flow.json"
 
-        self.trial_params_output.append({"mml_results": list(mml_distances)})
+        self.trial_params_output.append({"mml_results": list(self.mml_distances)})
         self.trial_params_output.append({"exp_version": exp_version})
 
         with open(output_name, "w") as f:
@@ -603,5 +690,5 @@ class CascExpSession(Session):
 subject_id, subject_dir = create_subject_dir(exp_version) #create subject directory for data storage
 
 if __name__ == '__main__':
-    my_sess = CascExpSession(subject_id, subject_dir, 'settings.yml')
+    my_sess = CascExpSession(subject_id, subject_dir, 'settings.yml', exp_flow = exp_flow, exp_params = exp_params, exp_texts = exp_texts)
     my_sess.run()

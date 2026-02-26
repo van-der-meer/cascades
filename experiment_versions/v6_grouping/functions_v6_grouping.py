@@ -4,25 +4,36 @@ import yaml
 import json
 import numpy as np
 
+import os
+
 def validate_experiment_folder(file_path):
+    file_path = os.path.abspath(file_path)
     file_name = os.path.splitext(os.path.basename(file_path))[0]
 
-    # Ensure filename ends with "main"
+    # Ensure filename starts with "main"
     if not file_name.startswith("main"):
-        print(f"ERROR: File '{file_name}.py' must start with 'main'.")
-        sys.exit(1)
+        raise ValueError(f"File '{file_name}.py' must start with 'main'.")
 
-    expected_folder_name = file_name[5:]  # remove trailing "main"
-    #parent_folder_name = os.path.basename(os.path.dirname(file_path))
-    current_path = os.path.basename(os.getcwd())
+    # Remove "main" from the start
+    expected_folder_name = file_name[4:]  # remove leading "main"
 
-    if current_path != expected_folder_name:
-        print(
-            f"ERROR: Folder name mismatch.\n"
-            f"Expected folder: '{expected_folder_name}'\n"
-            f"Actual folder:   '{current_path}'"
-        )
-        sys.exit(1)
+    # Folder where the file actually lives
+    file_directory = os.path.dirname(file_path)
+    actual_folder_name = os.path.basename(file_directory)
+
+    # If working directory is wrong → fix it
+    if os.getcwd() != file_directory:
+        print(f"Working directory mismatch. Changing to: {file_directory}")
+        os.chdir(file_directory)
+
+    # Optional: sanity check that folder matches filename rule
+    # if actual_folder_name != expected_folder_name:
+    #     print(
+    #         f"WARNING: Folder name does not match filename rule.\n"
+    #         f"Expected folder: '{expected_folder_name}'\n"
+    #         f"Actual folder:   '{actual_folder_name}'"
+    #     )
+
 
 def mq(params: dict, mml_distances = None):
 
@@ -130,12 +141,19 @@ def find_file(pattern):
 def open_params():
     # Get experiment parameters
 
-    params_file = find_file("params")
+    flow_file = find_file("exp_flow")
+    params_file = find_file("exp_params")
     text_file = find_file("texts")
 
+    flow_file_path = flow_file
     params_file_path = params_file
     texts_file_path = text_file
 
+    # Get experiment flow
+    with open(flow_file_path, 'r') as file:
+        exp_flow = yaml.safe_load(file)
+
+    # Get experiment params
     with open(params_file_path, 'r') as file:
         exp_params = yaml.safe_load(file)
 
@@ -143,7 +161,7 @@ def open_params():
     with open(texts_file_path, "r", encoding="utf-8") as f:
         exp_texts = json.load(f)
 
-    return exp_params, exp_texts
+    return exp_flow, exp_params, exp_texts
 
 
 def create_subject_dir(exp_version):
