@@ -1,17 +1,17 @@
-# Parameters for experiment 
+# Parameters for experiment
 
 # method of modified limits trials (mml)
 
-mml_params: 
+mml_params:
     n_reps: 4  # will be multiplied by 2 (one starting of each direction)
     base_dist_mml_trials: 100 # how large is the mml mq
-    max_mml_stretch: 60 
-    durs_mml_trials: [14, 16, 18, 20] # needs to be n = n_reps 
+    max_mml_stretch: 60
+    durs_mml_trials: [14, 16, 18, 20] # needs to be n = n_reps
 
 
-# 
+#
 
-main_params: 
-    reps_per_cell: 4 # how often is each condition repeated
+main_params:
+    reps_per_cell: 2 # how often is each condition repeated
 
 
