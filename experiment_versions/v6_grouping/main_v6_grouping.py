@@ -9,7 +9,7 @@ from exptools2.core import Trial, Session
 file_path = os.path.abspath(__file__)
 validate_experiment_folder(file_path)
 
-run_istruction = True
+run_istruction = False
 
 exp_version = os.path.basename(os.getcwd())
 
@@ -336,18 +336,18 @@ class CascExpSession(Session):
 
                 np.random.shuffle(combinations_grouping)
 
-                for combin in combinations_grouping:
+                for combin in range(len(combinations_grouping)):
 
                     trial_copy = copy.deepcopy(self.trial_params)
 
-                    trial_copy["freq"] = combin[2]
-                    trial_copy["fixation"] = combin[0]
+                    trial_copy["freq"] = combinations_grouping[combin][2]
+                    trial_copy["fixation"] = combinations_grouping[combin][0]
 
-                    if combin[1] == 1:
+                    if combinations_grouping[combin][1] == 1:
                         trial_copy["fixation"] = False
 
 
-                    if combin[1] == 9:
+                    if combinations_grouping[combin][1] == 9:
 
                         mq_keys = list(trial_copy["mqs"])
 
@@ -386,8 +386,8 @@ class CascExpSession(Session):
                                     )
 
                     trial_copy["params"] = {"id": "exp_grouping",
-                                            "freq": combin[2],
-                                            "n_mqs": combin[1],
+                                            "freq": combinations_grouping[combin][2],
+                                            "n_mqs": combinations_grouping[combin][1],
                                             "fixation": fixation[0],
                                             "trial_nr": self.trial_counter
                                             }
@@ -395,11 +395,12 @@ class CascExpSession(Session):
                     self.trial_params_output.append({self.trial_counter: trial_copy})
                     self.trial_counter += 1
 
-                    self.exp_trials.append(
-                                TextTrial(self, trial_nr=self.trial_counter, params=self.break_text_trial_params, texts = self.exp_texts)
-                            )
-                    self.trial_params_output.append({self.trial_counter: self.break_text_trial_params})
-                    self.trial_counter += 1
+                    if combin != (len(combinations_grouping)-1):
+                        self.exp_trials.append(
+                                    TextTrial(self, trial_nr=self.trial_counter, params=self.break_text_trial_params, texts = self.exp_texts)
+                                )
+                        self.trial_params_output.append({self.trial_counter: self.break_text_trial_params})
+                        self.trial_counter += 1
 
 
 
