@@ -25,6 +25,7 @@
   "exp_text_grouping_5": "If it is one pair of dots, press SPACE whenever you notice a change in direction in this single pair of dots.",
   "exp_text_grouping_6": "If it is nine pairs of dots, press SPACE whenever you notice a change in direction all of the nine pairs.",
   "exp_text_grouping_7": "Press space every time when you notice a change from one to the other direction.",
+  "exp_text_grouping_8": "In some trials there will be a fixation cross. \n \n In these trials please keep your eyes focused on the fixation cross. \n \n In the trials without fixation cross, you can look around freely between the dot pairs.",
   "exp_text_1": "Great - you finished part one. \n \n From now on, focus on the center of the screen and try to keep your gaze on the fixation cross.",
   "exp_text_2": "You will now see an entire row of the dot pairs.",
   "exp_text_3": "You might notice how they all do the same thing - they either all go up-down or all go left-right",

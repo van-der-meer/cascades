@@ -841,6 +841,24 @@ exp_expl_text_grouping_7:
           },
     }
 
+exp_expl_text_grouping_8:
+  trial_identifier: "exp_text_grouping_8" # inst
+  trial_type: "text"
+  continue: "space"
+  texts: {"text":
+          {
+          content: "exp_text_grouping_8",
+          pos: [0, 0],
+          size: 30
+          },
+        "continue_with_space":
+          {
+          content: "space_to_cont",
+          pos: [0, -200],
+          size: 25
+          },
+    }
+
 
 main_exp_grouping:
   trial_identifier: "main_exp_grouping"    # exp
