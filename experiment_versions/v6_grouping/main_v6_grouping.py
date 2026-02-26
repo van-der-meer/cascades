@@ -9,7 +9,7 @@ from exptools2.core import Trial, Session
 file_path = os.path.abspath(__file__)
 validate_experiment_folder(file_path)
 
-run_istruction = True 
+run_istruction = True
 
 exp_version = os.path.basename(os.getcwd())
 
@@ -220,7 +220,7 @@ class CascExpSession(Session):
             if "mml" in trial:
 
                 n_mml_reps = self.exp_params["mml_params"]["n_reps"]
-                    
+
                 base_distance = self.exp_params["mml_params"]["base_dist_mml_trials"]
                 mml_dist = self.exp_params["mml_params"]["max_mml_stretch"]
                 mml_multipliers = [-1, 1] * n_mml_reps
@@ -322,7 +322,7 @@ class CascExpSession(Session):
                 reps = 2
 
                 n_mqs = [1, 9] * reps
-                
+
                 frequencies = [3, 5, 7]
 
                 combinations_grouping = [
@@ -333,7 +333,7 @@ class CascExpSession(Session):
 
                 np.random.shuffle(combinations_grouping)
 
-                for combin in combinations_grouping: 
+                for combin in combinations_grouping:
 
                     trial_copy = copy.deepcopy(self.trial_params)
 
@@ -344,7 +344,7 @@ class CascExpSession(Session):
                         mq_keys = list(trial_copy["mqs"])
 
                         mq_params = trial_copy["mqs"][mq_keys[0]]
-                        
+
                         trial_copy["mqs"].pop(mq_keys[0])
 
                         spacing = 150
@@ -365,7 +365,7 @@ class CascExpSession(Session):
 
                     phase_durations = [1/trial_copy["freq"]] * trial_copy["len_trial"] * 2
 
-                    distances_grouping = self.mml_distances #* 0.9
+                    distances_grouping = self.mml_distances * 0.9
 
                     self.exp_trials.append(
                                 MQTrial(
@@ -376,10 +376,10 @@ class CascExpSession(Session):
                                     mml_distances=distances_grouping
                                     )
                                     )
-                    
-                    trial_copy["params"] = {"id": "exp_grouping", 
-                                            "freq": combin[1], 
-                                            "n_mqs": combin[0], 
+
+                    trial_copy["params"] = {"id": "exp_grouping",
+                                            "freq": combin[1],
+                                            "n_mqs": combin[0],
                                             "trial_nr": self.trial_counter
                                             }
 
@@ -404,7 +404,7 @@ class CascExpSession(Session):
                 vals_disamb = ["hor", "ver", None]
                 #vals_disamb = ["hor", "ver"]
 
-                n_cue = [1, 2, 3] # how many mqs are affected on one side 
+                n_cue = [1, 2, 3] # how many mqs are affected on one side
 
                 cue_present = [True, False]
                 #cue_present = [True]
@@ -433,7 +433,7 @@ class CascExpSession(Session):
                 # Determines experiment duration
 
                 reps_per_cell = self.exp_params["main_params"]["reps_per_cell"]
-                
+
                 self.trials_before_break = 20
                 self.break_counter = 0
 
@@ -503,8 +503,8 @@ class CascExpSession(Session):
                                                 "amb_2_dur": amb_2_dur,
                                                 "total_dur": amb_2_start + amb_2_dur,
                                                 "cue_start": cue_start,
-                                                "cue_dur": cue_dur, 
-                                                "n_biased": combination[0], 
+                                                "cue_dur": cue_dur,
+                                                "n_biased": combination[0],
                                                 "prime_start": prime_start}
 
 
@@ -513,7 +513,7 @@ class CascExpSession(Session):
                             #cue_dir = "ver"
                             cue_dist_hor =  self.mml_distances[0] * 1.75
                             cue_dist_ver =  self.mml_distances[1] * 1/1.75
-                            
+
                             for mq in mq_idxs:
                                 trial_copy["mqs"][mq]["dist_hor_start"] = self.mml_distances[0]# * 0.95
                                 trial_copy["mqs"][mq]["dist_ver_start"] = self.mml_distances[1]# * 1.05
@@ -532,7 +532,7 @@ class CascExpSession(Session):
                             #cue_dir = None
 
 
-                        
+
 
 
                         for prime in prime_idxs:
@@ -670,7 +670,7 @@ class CascExpSession(Session):
         if run_istruction:
             for trial in self.inst_trials:
                 trial.run()
-        else: 
+        else:
             self.output = [[[60, 60], [60, 60]]]
 
         self.show_loading_screen()
