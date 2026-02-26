@@ -343,6 +343,10 @@ class CascExpSession(Session):
                     trial_copy["freq"] = combin[2]
                     trial_copy["fixation"] = combin[0]
 
+                    if combin[1] == 1:
+                        trial_copy["fixation"] = False
+
+
                     if combin[1] == 9:
 
                         mq_keys = list(trial_copy["mqs"])
@@ -351,7 +355,7 @@ class CascExpSession(Session):
 
                         trial_copy["mqs"].pop(mq_keys[0])
 
-                        spacing = 150
+                        spacing = 200
                         coords_1d = np.linspace(-spacing, spacing, 3)
 
                         x, y = np.meshgrid(coords_1d, coords_1d)
@@ -369,7 +373,7 @@ class CascExpSession(Session):
 
                     phase_durations = [1/trial_copy["freq"]] * trial_copy["len_trial"] * 2
 
-                    distances_grouping = self.mml_distances * 0.9
+                    distances_grouping = self.mml_distances #* 0.9
 
                     self.exp_trials.append(
                                 MQTrial(

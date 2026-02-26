@@ -670,7 +670,7 @@ exp_expl_grouping_1:
   mqs: {
     mq1: {"type": "mq",
         "cycles": 10,      # nr of cycles (one cycle is one of each positions)
-        "center": [-150, -150],
+        "center": [-200, -200],
         "dot_size": 10,   # in px
         "dist_hor_start": 100,  # in px
         "dist_ver_start": 100,  # in px
@@ -679,7 +679,7 @@ exp_expl_grouping_1:
         },
     mq2: {"type": "mq",
         "cycles": 10,      # nr of cycles (one cycle is one of each positions)
-        "center": [0, -150],
+        "center": [0, -200],
         "dot_size": 10,   # in px
         "dist_hor_start": 100,  # in px
         "dist_ver_start": 100,  # in px
@@ -688,7 +688,7 @@ exp_expl_grouping_1:
         },
     mq3: {"type": "mq",
         "cycles": 10,      # nr of cycles (one cycle is one of each positions)
-        "center": [150, -150],
+        "center": [200, -200],
         "dot_size": 10,   # in px
         "dist_hor_start": 100,  # in px
         "dist_ver_start": 100,  # in px
@@ -697,7 +697,7 @@ exp_expl_grouping_1:
         },
     mq4: {"type": "mq",
         "cycles": 10,      # nr of cycles (one cycle is one of each positions)
-        "center": [-150, 0],
+        "center": [-200, 0],
         "dot_size": 10,   # in px
         "dist_hor_start": 100,  # in px
         "dist_ver_start": 100,  # in px
@@ -715,7 +715,7 @@ exp_expl_grouping_1:
         },
     mq6: {"type": "mq",
         "cycles": 10,      # nr of cycles (one cycle is one of each positions)
-        "center": [150, 0],
+        "center": [200, 0],
         "dot_size": 10,   # in px
         "dist_hor_start": 100,  # in px
         "dist_ver_start": 100,  # in px
@@ -724,7 +724,7 @@ exp_expl_grouping_1:
         },
     mq7: {"type": "mq",
         "cycles": 10,      # nr of cycles (one cycle is one of each positions)
-        "center": [-150, 150],
+        "center": [-200, 200],
         "dot_size": 10,   # in px
         "dist_hor_start": 100,  # in px
         "dist_ver_start": 100,  # in px
@@ -733,7 +733,7 @@ exp_expl_grouping_1:
         },
     mq8: {"type": "mq",
         "cycles": 10,      # nr of cycles (one cycle is one of each positions)
-        "center": [0, 150],
+        "center": [0, 200],
         "dot_size": 10,   # in px
         "dist_hor_start": 100,  # in px
         "dist_ver_start": 100,  # in px
@@ -742,7 +742,7 @@ exp_expl_grouping_1:
         },
     mq9: {"type": "mq",
         "cycles": 10,      # nr of cycles (one cycle is one of each positions)
-        "center": [150, 150],
+        "center": [200, 200],
         "dot_size": 10,   # in px
         "dist_hor_start": 100,  # in px
         "dist_ver_start": 100,  # in px
