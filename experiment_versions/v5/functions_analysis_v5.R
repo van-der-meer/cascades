@@ -3,7 +3,7 @@
 get_pp_data = function(subject){
   
   exp_params = fromJSON(file = paste(data_folder, subject, '/', subject, '_exp_params.json', sep = ''))
-  events = read_tsv(paste(data_folder, subject, '/', subject, '_events.tsv', sep = ''))
+  events = read_tsv(paste(data_folder, subject, '/', subject, '_events.tsv', sep = ''), show_col_types = FALSE)
   
   trial_ids = c()
   

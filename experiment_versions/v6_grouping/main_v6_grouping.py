@@ -388,7 +388,7 @@ class CascExpSession(Session):
                     trial_copy["params"] = {"id": "exp_grouping",
                                             "freq": combinations_grouping[combin][2],
                                             "n_mqs": combinations_grouping[combin][1],
-                                            "fixation": fixation[0],
+                                            "fixation": combin[0],
                                             "trial_nr": self.trial_counter
                                             }
 

@@ -20,76 +20,24 @@ data_folder = paste0("logs_", exp_version, "/")
 subjects <- list.dirs(data_folder, full.names = FALSE, recursive = FALSE)
 subjects <- subjects[!grepl("aborted", subjects)]
 
-subject = "test6"
-
-exp_output = fromJSON(file = paste(data_folder, subject, '/', subject, '_exp_flow.json', sep = ''))
-events = read_tsv(paste(data_folder, subject, '/', subject, '_events.tsv', sep = ''))
-
-trial_ids = c()
-
-for (trial in exp_output){
-  trial_ids = c(trial_ids, names(trial))
-}
+subject = "025"
 
 
-trial_ids_numeric = as.numeric(trial_ids[1:(length(trial_ids)-2)]) # -2 to take away "mml_results" and "exp_version"
+dfs = get_all_subjects_data(subject)
+
+grouping_df = dfs[[1]]
+casc_df = dfs[[2]]
 
 
-group_trials = list()
-group_trial_ids = c()
-
-cascade_trials = list()
-cascade_trial_ids = c()
-
-for (trial_id in trial_ids_numeric){
-  trial = exp_output[[trial_ids_numeric[trial_id]]][[trial_ids[trial_id]]]
-  
-  print(trial$trial_identifier)
-  
-  if (grepl("main_exp_cascades", trial$trial_identifier)){
-    cascade_trials = append(cascade_trials, list(trial))
-    cascade_trial_ids = c(cascade_trial_ids, trial_id)
-  }
-  
-  if (grepl("main_exp_grouping", trial$trial_identifier)){
-    group_trials = append(group_trials, list(trial))
-    group_trial_ids = c(group_trial_ids, trial_id)
-  }
-  
-}
+# Analysis grouping things
 
 
-params_df_grouping = data.frame(
-  group_trial_ids,
-  cue_present = unlist(lapply(group_trials, function(x)
-    x$params$freq)), 
-  n_mqs = unlist(lapply(group_trials, function(x)
-    x$params$n_mqs))
-)
+grouping_df
 
 
+# Analysis cascading things
 
-events %>% filter(trial_nr %in% group_trial_ids) %>%
-  pull(trial_nr) %>% unique()
-
-
-
-
-
-
-
-for (subject in 1:length(subjects)){
-  if (subject == 1)(
-    pp_df = get_pp_data(subject = subjects[subject])
-  )
-  else{
-    pp_df = rbind(pp_df, get_pp_data(subject = subjects[subject]))
-  }
-}
-
-
-
-trial_durs <- pp_df %>%
+trial_durs <- casc_df %>%
   mutate(
     condition = case_when(
       cue_present & cue_delay == 6 ~ "Cue delay 6",
@@ -115,7 +63,7 @@ trial_durs$condition <- factor(
 
 summarise_design_cells(trial_durs)
 
-cue_lines <- pp_df %>%
+cue_lines <- casc_df %>%
   filter(cue_present) %>%
   mutate(
     condition = case_when(
