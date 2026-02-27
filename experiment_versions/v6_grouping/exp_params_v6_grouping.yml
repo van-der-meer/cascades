@@ -12,6 +12,10 @@ mml_params:
 #
 # Because of later collapsing of conditions, this matrix is "pruned" in the final script to avoid displroportionally high ns in the comparison conditions
 
+main_exp_params:
+    size_scalar: 0.8
+
+
 main_params_cascades:
     reps_per_cell: 2 # how often is each condition repeated
     vals_side: ["left", "right"]

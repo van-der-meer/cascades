@@ -9,7 +9,7 @@ from exptools2.core import Trial, Session
 file_path = os.path.abspath(__file__)
 validate_experiment_folder(file_path)
 
-run_istruction = False
+run_istruction = True
 
 exp_version = os.path.basename(os.getcwd())
 
@@ -308,7 +308,7 @@ class CascExpSession(Session):
 
         self.mml_distances = np.mean(np.abs(self.output), axis = 0)[0]
 
-        self.mml_distances = self.mml_distances * 0.8 # scale this up or down a bit
+        self.mml_distances = self.mml_distances * self.exp_params["main_exp_params"]["size_scalar"] # scale this up or down a bit
 
 
         self.break_text_trial_params = self.exp_flow["break_text"] # unelegant...
