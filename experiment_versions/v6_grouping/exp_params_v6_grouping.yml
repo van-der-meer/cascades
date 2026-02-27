@@ -10,8 +10,20 @@ mml_params:
 
 
 #
+# Because of later collapsing of conditions, this matrix is "pruned" in the final script to avoid displroportionally high ns in the comparison conditions
 
-main_params:
+main_params_cascades:
     reps_per_cell: 2 # how often is each condition repeated
+    vals_side: ["left", "right"]
+    vals_disamb: ["hor", "ver", None]
+    n_cue: [1, 2, 3]
+    cue_present: [True, False]
+    cue_timings: [2, 4, 6] 
 
 
+main_params_grouping:
+    reps_per_cell: 1 # how often is each condition repeated
+    n_mqs: [1, 9] # how many mqs are presented - only works with 1 and 9 right now!
+    frequencies: [3, 5, 7] 
+    fixation: [True, False]
+    trial_dur: 60 # trial duration in seconds

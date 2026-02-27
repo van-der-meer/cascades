@@ -319,13 +319,15 @@ class CascExpSession(Session):
 
             if trial == "main_exp_grouping":
 
-                reps = 1
+                reps = self.exp_params["main_params_grouping"]["reps_per_cell"]
 
-                n_mqs = [1, 9] * reps
+                n_mqs = self.exp_params["main_params_grouping"]["n_mqs"] * reps 
 
-                frequencies = [3, 5, 7]
+                frequencies = self.exp_params["main_params_grouping"]["frequencies"]
 
-                fixation = [True, False]
+                fixation = self.exp_params["main_params_grouping"]["fixation"]
+
+                trial_dur = self.exp_params["main_params_grouping"]["trial_dur"] / 2
 
                 combinations_grouping = [
                             (x, y, z)
@@ -369,11 +371,11 @@ class CascExpSession(Session):
 
                     trial_copy["trial_nr"] = self.trial_counter
 
-                    trial_copy["len_trial"] = 30 * trial_copy["freq"] + 2
+                    trial_copy["len_trial"] = trial_dur * trial_copy["freq"] + 2
 
-                    phase_durations = [1/trial_copy["freq"]] * trial_copy["len_trial"] * 2
+                    phase_durations = [1/trial_copy["freq"]] * int(trial_copy["len_trial"]) * 2
 
-                    distances_grouping = self.mml_distances #* 0.9
+                    distances_grouping = self.mml_distances 
 
                     self.exp_trials.append(
                                 MQTrial(
@@ -388,7 +390,7 @@ class CascExpSession(Session):
                     trial_copy["params"] = {"id": "exp_grouping",
                                             "freq": combinations_grouping[combin][2],
                                             "n_mqs": combinations_grouping[combin][1],
-                                            "fixation": combin[0],
+                                            "fixation": combinations_grouping[combin][0],
                                             "trial_nr": self.trial_counter
                                             }
 
@@ -409,19 +411,15 @@ class CascExpSession(Session):
 
                 # vars
 
-                vals_side = ["left", "right"]
+                vals_side = self.exp_params["main_params_cascades"]["vals_side"]
 
-                vals_disamb = ["hor", "ver", None]
-                #vals_disamb = ["hor", "ver"]
+                vals_disamb = self.exp_params["main_params_cascades"]["vals_disamb"]
 
-                n_cue = [1, 2, 3] # how many mqs are affected on one side
+                n_cue = self.exp_params["main_params_cascades"]["n_cue"] # how many mqs are affected on one side
 
-                cue_present = [True, False]
-                #cue_present = [True]
+                cue_present = self.exp_params["main_params_cascades"]["cue_present"]
 
-                timings = [2, 4, 6] # cycles (1 cycle is 2 phases a 0.2s)
-
-                #combinations = [(w, x, y, z) for w in vals_side for x in vals_disamb for y in timings for z in cue_present]
+                timings = self.exp_params["main_params_cascades"]["cue_timings"] # cycles (1 cycle is 2 phases a 0.2s)
 
                 # should balance classes by preventing too many conditions without prime
                 combinations = [
@@ -442,7 +440,7 @@ class CascExpSession(Session):
 
                 # Determines experiment duration
 
-                reps_per_cell = self.exp_params["main_params"]["reps_per_cell"]
+                reps_per_cell = self.exp_params["main_params_cascades"]["reps_per_cell"]
 
                 self.trials_before_break = 20
                 self.break_counter = 0

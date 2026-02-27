@@ -111,7 +111,7 @@ def pad_frames(mqs, trial_params):
     mq_params= mqs["params"]
     positions= mqs["positions"]
 
-    len_trial = trial_params["len_trial"] * 2
+    len_trial = int(trial_params["len_trial"] * 2)
 
     frames_out = np.zeros(shape=(len_trial, 2, 2))
     frames_out[:] = np.nan

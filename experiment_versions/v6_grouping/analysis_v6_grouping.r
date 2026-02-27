@@ -30,9 +30,13 @@ casc_df = dfs[[2]]
 
 
 # Analysis grouping things
+grouping_df$fixation %>% table
 
-
-grouping_df
+grouping_df %>% 
+  filter(n_mqs == 9, fixation == FALSE) %>% 
+  filter(response == "space") %>%
+  ggplot() +
+  geom_vline(aes(xintercept = onset_rel))
 
 
 # Analysis cascading things
