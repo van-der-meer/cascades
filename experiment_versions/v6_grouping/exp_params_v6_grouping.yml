@@ -26,8 +26,8 @@ main_params_cascades:
 
 
 main_params_grouping:
-    reps_per_cell: 1 # how often is each condition repeated
+    reps_per_cell: 2 # how often is each condition repeated
     n_mqs: [1, 9] # how many mqs are presented - only works with 1 and 9 right now!
-    frequencies: [3, 5, 7] 
+    frequencies: [5, 7] 
     fixation: [True, False]
     trial_dur: 60 # trial duration in seconds

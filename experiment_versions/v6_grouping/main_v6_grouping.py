@@ -334,6 +334,9 @@ class CascExpSession(Session):
                             for x in fixation
                             for y in n_mqs
                             for z in frequencies
+                            if not (
+                                (x is True and y == 1)
+                            )
                             ]
 
                 np.random.shuffle(combinations_grouping)
@@ -344,10 +347,6 @@ class CascExpSession(Session):
 
                     trial_copy["freq"] = combinations_grouping[combin][2]
                     trial_copy["fixation"] = combinations_grouping[combin][0]
-
-                    if combinations_grouping[combin][1] == 1:
-                        trial_copy["fixation"] = False
-
 
                     if combinations_grouping[combin][1] == 9:
 
@@ -534,6 +533,8 @@ class CascExpSession(Session):
                                 trial_copy["mqs"][mq]["dist_hor_start"] = self.mml_distances[0]# * 1.05
                                 trial_copy["mqs"][mq]["dist_ver_start"] = self.mml_distances[1]# * 0.95
                         else:
+                            cue_dist_hor =  self.mml_distances[0]
+                            cue_dist_ver =  self.mml_distances[1]
                             for mq in mq_idxs:
                                 trial_copy["mqs"][mq]["dist_hor_start"] = self.mml_distances[0]
                                 trial_copy["mqs"][mq]["dist_ver_start"] = self.mml_distances[1]

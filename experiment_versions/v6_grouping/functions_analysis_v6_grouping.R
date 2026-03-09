@@ -37,7 +37,7 @@ get_pp_data = function(subject){
   
   grouping_trials_df = data.frame(
     group_trial_ids,
-    cue_present = unlist(lapply(group_trials, function(x)
+    freq = unlist(lapply(group_trials, function(x)
       x$params$freq)), 
     n_mqs = unlist(lapply(group_trials, function(x)
       x$params$n_mqs)), 
@@ -115,6 +115,8 @@ get_pp_data = function(subject){
   combined_casc_df <- cascade_trials_df %>%
     left_join(trial_durs_df %>% select(trial_nr, trial_start, trial_end, trial_duration_precise),
               by = c("cascade_trial_ids" = "trial_nr"))
+  
+  grouping_trials_joined = grouping_trials_joined %>% mutate(subject_id = as.numeric(subject))
   
   return(list(grouping_trials_joined, combined_casc_df))
 }

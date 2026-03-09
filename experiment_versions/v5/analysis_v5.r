@@ -17,7 +17,7 @@ data_folder = paste0("experiment_versions/", exp_version, "/logs_", exp_version,
 subjects <- list.dirs(data_folder, full.names = FALSE, recursive = FALSE)
 subjects <- subjects[!grepl("aborted", subjects)]
 
-subjects = c("021", "022", "023")
+subjects = c("021", "022", "023", "024")
 
 #subjects = "023"
 
@@ -36,7 +36,7 @@ for (subject in 1:length(subjects)){
   }
 }
 
-
+#trial_durs$main_trial_ids %>% length() * 1.25 / 20
 
 trial_durs <- pp_df %>%
   mutate(
@@ -87,9 +87,9 @@ trial_durs_filtered = trial_durs %>%
   )
 
 trial_durs_filtered %>%
-  filter(n_biased == 3) %>%
+  filter(n_biased == 2) %>%
   #filter(side == "right") %>% 
-  filter(disamb == "ver") %>%
+  #filter(disamb == "ver") %>%
   ggplot(aes(x = condition, y = trial_duration_precise)) +
   geom_violin(trim = FALSE, alpha = 0.6) +
   geom_jitter(
@@ -137,6 +137,16 @@ bf_anova <- anovaBF(
 
 bf_anova
 
+3 * 2 * 3 * 2
 
 
-#summarise_design_cells(trial_durs_filtered)
+summarise_design_cells(trial_durs_filtered)
+
+
+
+
+# manipulate ar instead of timing 
+# test for field vs individual switches 
+
+
+

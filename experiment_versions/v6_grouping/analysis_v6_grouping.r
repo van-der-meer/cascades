@@ -20,10 +20,10 @@ data_folder = paste0("logs_", exp_version, "/")
 subjects <- list.dirs(data_folder, full.names = FALSE, recursive = FALSE)
 subjects <- subjects[!grepl("aborted", subjects)]
 
-subject = "025"
+subjects = c("026", "028")
 
 
-dfs = get_all_subjects_data(subject)
+dfs = get_all_subjects_data(subjects)
 
 grouping_df = dfs[[1]]
 casc_df = dfs[[2]]
@@ -33,13 +33,38 @@ casc_df = dfs[[2]]
 grouping_df$fixation %>% table
 
 grouping_df %>% 
-  filter(n_mqs == 9, fixation == FALSE) %>% 
+  filter(n_mqs == 9, fixation == F, freq == 3) %>% 
   filter(response == "space") %>%
   ggplot() +
   geom_vline(aes(xintercept = onset_rel))
 
 
+grouping_df %>% 
+  group_by(subject_id, freq, n_mqs, fixation) %>%
+  filter(response == "space") %>% 
+  summarise(n_switches = n(), .groups = "drop") %>% 
+  mutate(fixation = ifelse(n_mqs == 1, FALSE, fixation),
+         condition = paste(freq, n_mqs, fixation, sep = "_")) %>% 
+  ggplot(aes(x = condition, y = n_switches)) +
+  geom_violin(trim = FALSE) +
+  geom_jitter(width = 0.1, alpha = 0.6)
+  
+
+# drop 3 hz and adjust fixation 
+
+# take average interval time as measure 
+
+# check for difference in time/ frequency as predictor for switch rate 
+  
+# Add experiments in netlogo (world parameters can be updated)
+
+# Implement experiments in netlogo
+
+# Do simulations to see how much data we need to falsify constant hazard rate (exponential dist)
+
 # Analysis cascading things
+
+# Good reason to contact people is me looking for conferences and looking for symposia to apply 
 
 trial_durs <- casc_df %>%
   mutate(

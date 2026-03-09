@@ -9,7 +9,7 @@ from exptools2.core import Trial, Session
 file_path = os.path.abspath(__file__)
 validate_experiment_folder(file_path)
 
-run_istruction = True
+run_istruction = False
 
 exp_version = os.path.basename(os.getcwd())
 
