@@ -116,6 +116,7 @@ trial_durs_filtered %>%
   )
 
 
+
 lm_1 <- lm(trial_duration_precise ~ condition, data = trial_durs)
 summary(lm_1)
 

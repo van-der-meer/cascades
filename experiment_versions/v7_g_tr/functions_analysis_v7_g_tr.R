@@ -68,17 +68,17 @@ get_pp_data = function(subject){
       mutate(onset_rel = onset - min(onset, na.rm = TRUE)) %>%
       ungroup()
     
-    grouping_trials_joined = grouping_trials_joined %>% mutate(subject_id = as.numeric(subject))
+    grouping_trials_joined = grouping_trials_joined %>% mutate(subject_id = subject)
     
   } else {
     grouping_trials_joined <- data.frame(matrix(ncol = 14, nrow = 0))
     colnames(grouping_trials_joined) <- c("trial_nr", "onset", "event_type", "phase", "response", "nr_frames", "onset_abs", "duration", 
                                           "freq", "n_mqs", "fixation", "onset_rel", "subject_id")
   }
-    
-    
-    
-    
+  
+  
+  
+  
   
   
   
@@ -116,9 +116,9 @@ get_pp_data = function(subject){
   
   
   cascade_trials_df = cascade_trials_df %>% mutate(max_dur_calculated = amb_2_dur + amb_2_start, 
-                                   max_dur_seconds = max_dur_calculated * 0.2, 
-                                   amb_1_onset = amb_1_onset, 
-                                   subject_id = subject)
+                                                   max_dur_seconds = max_dur_calculated * 0.2, 
+                                                   amb_1_onset = amb_1_onset, 
+                                                   subject_id = subject)
   
   
   

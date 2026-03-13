@@ -1,0 +1,33 @@
+# Parameters for experiment
+
+# method of modified limits trials (mml)
+
+mml_params:
+    n_reps: 4  # will be multiplied by 2 (one starting of each direction)
+    base_dist_mml_trials: 100 # how large is the mml mq
+    max_mml_stretch: 60
+    durs_mml_trials: [14, 16, 18, 20] # needs to be n = n_reps
+
+
+#
+# Because of later collapsing of conditions, this matrix is "pruned" in the final script to avoid displroportionally high ns in the comparison conditions
+
+main_exp_params:
+    size_scalar: 0.8
+
+
+main_params_cascades:
+    reps_per_cell: 2 # how often is each condition repeated
+    vals_side: ["left", "right"]
+    vals_disamb: ["hor", "ver", None]
+    n_cue: [1, 2, 3]
+    cue_present: [True, False]
+    cue_timings: [2, 4, 6] 
+
+
+main_params_grouping:
+    reps_per_cell: 2 # how often is each condition repeated
+    n_mqs: [1, 9] # how many mqs are presented - only works with 1 and 9 right now!
+    frequencies: [5, 7] 
+    fixation: [True, False]
+    trial_dur: 60 # trial duration in seconds

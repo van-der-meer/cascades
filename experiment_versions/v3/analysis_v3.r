@@ -7,7 +7,7 @@ library(readr)
 library(dplyr)
 library(ggplot2)
 
-exp_version = "v3_cycles_based"
+exp_version = "v3"
 
 data_folder = paste0("experiment_versions/", exp_version, "/logs_", exp_version, "/")
 

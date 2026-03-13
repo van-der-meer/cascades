@@ -9,6 +9,7 @@ library(ggplot2)
 
 exp_version = "v4_3mqs"
 
+
 # Load helper functions
 source(paste("experiment_versions/", exp_version, "/functions_analysis.R", sep = ""))
 
@@ -17,12 +18,14 @@ data_folder = paste0("experiment_versions/", exp_version, "/logs_", exp_version,
 subjects <- list.dirs(data_folder, full.names = FALSE, recursive = FALSE)
 subjects <- subjects[!grepl("aborted", subjects)]
 
+subjects <- subjects[!grepl("pilot", subjects)]
+
 
 #subjects = subjects[4]
 
 # Subjects 1 and 4 (11) and (14) are excluded because they reportedly did not understand the instructions
 
-subjects = subjects[c(2, 3, 5, 5, 6, 7, 8, 9, 10)]
+subjects = subjects[c(2, 3, 5, 5, 6, 7, 8)]
 
 
 
@@ -39,7 +42,7 @@ for (subject in 1:length(subjects)){
   }
 }
 
-trial_durs %>% filter(side == "right")
+#trial_durs %>% filter(side == "right")
 
 trial_durs <- pp_df %>%
   mutate(
@@ -105,8 +108,6 @@ trial_durs_filtered %>%
   filter(condition == "Prime only")
 
 trial_durs_filtered %>%
-  filter(disamb == "ver") %>%
-  filter(side == "right") %>%
   ggplot(aes(x = condition, y = trial_duration_precise)) +
   geom_violin(trim = FALSE, alpha = 0.6) +
   geom_jitter(
