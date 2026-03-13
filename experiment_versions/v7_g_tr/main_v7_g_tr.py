@@ -127,6 +127,10 @@ class MQTrial(Trial):
         if self.last_resp == "s":
             self.stop_trial()
 
+        if self.last_resp == "e":
+            self.session.skip_to_prompts = True
+            self.stop_trial()
+
         if self.button:
             if self.last_resp == self.button:
 
@@ -181,6 +185,10 @@ class TextTrial(Trial):
             text_stim.draw()
 
         if self.last_resp == "s":
+            self.stop_trial()
+
+        if self.last_resp == "e":
+            self.session.skip_to_prompts = True
             self.stop_trial()
 
         # Check for button press
@@ -359,6 +367,7 @@ class CascExpSession(Session):
         self.exp_flow = exp_flow
         self.exp_params = exp_params
         self.exp_texts = exp_texts
+        self.skip_to_prompts = False
 
         output_name_params = self.output_dir + "/" + self.output_str + "_exp_params.json"
 
@@ -983,6 +992,8 @@ class CascExpSession(Session):
         self.show_loading_screen()
 
         for trial in self.exp_trials:
+            if self.skip_to_prompts and not isinstance(trial, PromptTrial):
+                continue
             trial.run()
 
         self.close()

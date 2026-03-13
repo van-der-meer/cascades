@@ -1,4 +1,4 @@
-setwd("/Users/daniel/Documents/Arbeit/PHD/Research/Experiment/cascades/experiment_versions/v6_grouping")
+setwd("/Users/daniel/Documents/Arbeit/PHD/Research/Experiment/cascades/experiment_versions/v7_g_tr")
 
 rm(list = ls())
 
@@ -10,17 +10,18 @@ library(ggplot2)
 
 ## WARNING file names have changed! not exp_params anymore but exp_flow/ inst_flow!
 
-exp_version = "v6_grouping"
+exp_version = "v7_g_tr"
 
 # Load helper functions
-source("functions_analysis_v6_grouping.R")
+source("functions_analysis_v7_g_tr.R")
 
 data_folder = paste0("logs_", exp_version, "/")
 
 subjects <- list.dirs(data_folder, full.names = FALSE, recursive = FALSE)
 subjects <- subjects[!grepl("aborted", subjects)]
-subjects <- subjects[!grepl("test", subjects)]
+#subjects <- subjects[!grepl("test", subjects)]
 
+subjects <- subjects[12]
 
 dfs = get_all_subjects_data(subjects)
 
