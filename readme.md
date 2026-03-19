@@ -38,7 +38,7 @@ uv venv --python 3.10
 
 ## 4. Activate the Environment
 
-> ⚠️ You must activate the environment before running the code.  
+> You must activate the environment before running the code.  
 > You may need to reactivate it when switching sessions.
 
 **Mac / Linux:**
