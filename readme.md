@@ -55,10 +55,10 @@ source .venv/bin/activate
 
 ## 5. Install Dependencies
 
-Install `psychopy`:
+Install `psychopy`, `numpy`, and `pyyaml`:
 
 ```bash
-uv pip install psychopy
+uv pip install psychopy numpy pyyaml
 ```
 
 ---
@@ -116,7 +116,12 @@ You can now proceed to run the experiment scripts.
 
 ---
 
-## 💡 Notes
+## 10. Run experiment as specified in the manual
+
+
+---
+
+## Notes
 
 - Always ensure your virtual environment is activated before running code.
 - If something breaks, try reinstalling dependencies inside the environment.
