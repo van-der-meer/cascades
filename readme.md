@@ -9,7 +9,7 @@ This guide walks you through setting up and running the **Cascading Transitions 
 The recommended way to manage environments is using `uv`.
 
 Follow the official installation guide:  
-👉 https://docs.astral.sh/uv/getting-started/installation/
+https://docs.astral.sh/uv/getting-started/installation/
 
 ---
 
