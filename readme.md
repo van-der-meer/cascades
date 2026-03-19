@@ -128,5 +128,3 @@ You can now proceed to run the experiment scripts.
 - Keep your environment isolated to avoid version conflicts.
 
 ---
-
-Happy experimenting! 🎉
