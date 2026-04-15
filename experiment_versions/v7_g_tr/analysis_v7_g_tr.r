@@ -5,7 +5,9 @@ rm(list = ls())
 library(rjson)
 library(readr)
 library(dplyr)
+library(tidyr)
 library(ggplot2)
+library(BayesFactor)
 
 
 ## WARNING file names have changed! not exp_params anymore but exp_flow/ inst_flow!
@@ -21,7 +23,9 @@ subjects <- list.dirs(data_folder, full.names = FALSE, recursive = FALSE)
 subjects <- subjects[!grepl("aborted", subjects)]
 #subjects <- subjects[!grepl("test", subjects)]
 
-subjects <- subjects[12]
+subjects <- subjects[-1] # first is dummy subject to test data collection
+
+length(subjects)
 
 dfs = get_all_subjects_data(subjects)
 
@@ -32,57 +36,145 @@ casc_df = dfs[[2]]
 # Analysis grouping things
 grouping_df$fixation %>% table
 
-grouping_df %>% 
-  filter(subject_id == 026) %>% 
-  filter(n_mqs == 9, freq == 3) %>% 
-  filter(response == "space") %>%
-  ggplot() +
-  geom_vline(aes(xintercept = onset_rel)) +
-  theme(
-    axis.text = element_text(size = 16)  # increase axis number size
-  )
 
 grouping_df %>% 
   group_by(subject_id, freq, n_mqs, fixation) %>%
   filter(response == "space") %>% pull(trial_nr) %>% unique()
 
 
-grouping_df %>% 
-  group_by(subject_id, freq, n_mqs, fixation, trial_nr) %>%
-  filter(response == "space") %>% 
-  filter(freq != 3) %>%
-  summarise(n_switches = n(), .groups = "drop") %>% 
-  mutate(fixation = ifelse(n_mqs == 1, FALSE, fixation),
-         condition = paste(freq, n_mqs, fixation, sep = "_"),
-         n_mqs = as.factor(n_mqs)) %>% 
-  ggplot(aes(x = condition, y = n_switches)) +
+# grouping_df %>% 
+#   group_by(subject_id, freq, n_mqs, fixation, trial_nr) %>%
+#   filter(response == "space") %>% 
+#   filter(freq != 3) %>%
+#   summarise(n_switches = n(), .groups = "drop") %>% 
+#   mutate(fixation = ifelse(n_mqs == 1, FALSE, fixation),
+#          condition = paste(freq, n_mqs, fixation, sep = "_"),
+#          n_mqs = as.factor(n_mqs)) %>% 
+#   ggplot(aes(x = condition, y = n_switches)) +
+#   geom_violin(trim = FALSE) +
+#   geom_boxplot(width = 0.2) +
+#   geom_jitter(width = 0.1, alpha = 0.6) +
+#   labs(
+#     x = "Number of MQs",
+#     y = "Number of Switches"
+#   )
+
+# Method 1:
+
+t_test_df <- grouping_df %>%
+  filter(response == "space", freq != 3) %>%
+  filter(fixation == FALSE) %>%
+  group_by(subject_id, trial_nr, freq, n_mqs, fixation) %>%
+  arrange(onset, .by_group = TRUE) %>%
+  filter(n() >= 2) %>%
+  summarise(
+    dominance_durations = list(diff(onset)),
+    n_switches = n() - 1,
+    .groups = "drop"
+  ) %>%
+  unnest(dominance_durations) %>%
+  group_by(subject_id, trial_nr, freq, n_mqs, fixation) %>%
+  slice(-1, -n()) %>%  # remove first & last (censored) durations
+  ungroup() %>%
+  mutate(
+    cond = as.factor(paste(freq, n_mqs, fixation, sep = "_")),
+    n_mqs = as.factor(n_mqs),
+    dominance_duration_log = log(dominance_durations)
+  ) 
+  
+
+t_test_df %>%
+  ggplot(aes(x = n_mqs, y = dominance_duration_log)) +
   geom_violin(trim = FALSE) +
-  geom_boxplot(width = 0.2) +
   geom_jitter(width = 0.1, alpha = 0.6) +
+  geom_boxplot(width = 0.2) +
   labs(
-    x = "Number of MQs",
-    y = "Number of Switches"
+    y = "diff switches"
   )
+
+
+t.test(dominance_duration_log ~ n_mqs, t_test_df)
+
+
+# Method 2
+
+# t_test_df <- grouping_df %>% 
+#   group_by(subject_id, trial_nr, freq, n_mqs, fixation) %>%
+#   filter(response == "space") %>% 
+#   #filter(subject_id == subjects[5]) %>% 
+#   filter(fixation == FALSE) %>% 
+#   filter(freq != 3) %>%
+#   summarise(diff_switches_log = mean(log(diff(onset)))) %>%
+#   mutate(#fixation = ifelse(n_mqs == 1, FALSE, fixation),
+#     cond = as.factor(paste(freq, n_mqs, fixation, sep = "_")),
+#     n_mqs = as.factor(n_mqs))
+# 
+# t_test_df %>% 
+#   ggplot(aes(x = n_mqs, y = diff_switches_log)) +
+#   geom_violin(trim = FALSE) +
+#   geom_boxplot(width = 0.2) +
+#   geom_jitter(width = 0.1, alpha = 0.6) +
+#   labs(
+#     y = "diff switches"
+#   )
+# 
+# t.test(diff_switches_log ~ n_mqs, t_test_df)
+
+#### mixed model
+
+library(lme4)
+library(emmeans)
+library(lmerTest)
+
+model_df <- grouping_df %>%
+  filter(response == "space", freq != 3) %>%
+  group_by(subject_id, trial_nr, freq, n_mqs, fixation) %>%
+  arrange(onset, .by_group = TRUE) %>%
+  filter(n() >= 2) %>%
+  summarise(
+    dominance_durations = list(diff(onset)),
+    n_switches = n() - 1,
+    .groups = "drop"
+  ) %>%
+  unnest(dominance_durations) %>%
+  group_by(subject_id, trial_nr, freq, n_mqs, fixation) %>%
+  slice(-1, -n()) %>%
+  ungroup() %>%
+  mutate(
+    n_mqs = as.factor(n_mqs),
+    fixation = as.factor(fixation),
+    dominance_duration_log = log(dominance_durations)
+  )
+
+mod <- lmer(
+  dominance_duration_log ~ n_mqs * fixation + (1 | subject_id) + (1 | subject_id:trial_nr),
+  data = model_df
+)
+
+summary(mod)
+anova(mod)
+
+emm <- emmeans(mod, ~ n_mqs | fixation)
+pairs(emm)
+
+
+# include random pps as random effects in model 
+
 
 grouping_df %>% 
   group_by(subject_id, trial_nr, freq, n_mqs, fixation) %>%
   filter(response == "space") %>% 
   filter(freq != 3) %>%
   summarise(diff_switches = mean(diff(onset))) %>%
-  mutate(fixation = ifelse(n_mqs == 1, FALSE, fixation),
-         cond = as.factor(paste(freq, n_mqs, fixation, sep = "_")),
-         n_mqs = as.factor(n_mqs)) %>% 
-  ggplot(aes(x = cond, y = diff_switches)) +
-  geom_violin(trim = FALSE) +
-  geom_boxplot(width = 0.2) +
-  geom_jitter(width = 0.1, alpha = 0.6) +
-  labs(
-    x = "Number of MQs",
-    y = "diff switches"
-  )
+  mutate(#fixation = ifelse(n_mqs == 1, FALSE, fixation),
+    cond = as.factor(paste(freq, n_mqs, fixation, sep = "_")),
+    n_mqs = as.factor(n_mqs), 
+    subject_id = as.factor(subject_id), 
+    diff_switches_log = log(diff_switches)) %>% 
+  anovaBF(diff_switches_log ~ n_mqs + subject_id, data = ., whichRandom = "subject_id")
 
 
-# include random pps as random effects in model 
+
 
 grouping_df %>% 
   filter(freq != 3) %>%
@@ -96,7 +188,7 @@ grouping_df %>%
     onset_rel_diff = onset_rel - lag(onset_rel)
   ) %>% 
   filter(!is.na(onset_rel_diff)) %>%
-  pull(onset_rel_diff) %>% hist(breaks = 30, main = "Dominance durations combined")
+  pull(onset_rel_diff) %>% log() %>% hist(breaks = 30, main = "Dominance durations combined")
 
 diff_grouping_switches <- grouping_df %>% 
   filter(freq != 3) %>%
@@ -110,17 +202,16 @@ diff_grouping_switches <- grouping_df %>%
     onset_rel_diff = onset_rel - lag(onset_rel)
   ) %>% 
   filter(!is.na(onset_rel_diff)) %>% 
-  mutate(fixation = ifelse(n_mqs == 1, FALSE, fixation),
+  mutate(#fixation = ifelse(n_mqs == 1, FALSE, fixation),
          cond = as.factor(paste(freq, n_mqs, fixation, sep = "_")),
          n_mqs = as.factor(n_mqs)) 
   
 diff_grouping_switches %>% 
   ggplot(aes(x = cond, y = onset_rel_diff)) +
   geom_violin(trim = FALSE) +
-  geom_boxplot(width = 0.2) +
   geom_jitter(width = 0.4, alpha = 0.2) +
+  geom_boxplot(width = 0.2) +
   labs(
-    x = "Number of MQs",
     y = "diff switches"
   )
 
@@ -192,8 +283,11 @@ trial_durs_filtered = trial_durs %>%
           round(trial_duration_precise, 1)) > 1e-6 # solve floating point issue
   )
 
+# check for difference in ceiling effects between conditions
+
+
 trial_durs_filtered %>%
-  #filter(n_biased == 3) %>%
+  filter(n_biased == 3) %>%
   #filter(side == "right") %>% 
   #filter(disamb == "ver") %>%
   ggplot(aes(x = condition, y = trial_duration_precise)) +
@@ -240,11 +334,16 @@ summary(lm_1)
 
 library(BayesFactor)
 
+trial_durs_filtered$condition
 
 trial_durs_filtered_test = trial_durs_filtered %>% 
   filter(disamb != "none") %>% 
   filter(n_biased == 3) %>%
-  filter(side == "right") 
+  filter(condition %in% c("Cue delay 2", "Prime only")) 
+
+
+t.test(trial_duration_precise ~ condition, trial_durs_filtered_test)
+
 
 
 bf_anova <- anovaBF(
@@ -252,5 +351,5 @@ bf_anova <- anovaBF(
   data = trial_durs_filtered_test
 )
 
-1/bf_anova
-
+bf_anova
+  

@@ -1,0 +1,168 @@
+# Experiment flow for v8_kde
+# ─────────────────────────────────────────────────────────────────────────────
+# Global defaults applied to every KDE trial unless overridden at trial level.
+defaults:
+  n_dots: 200
+  sphere_radius: 2.0    # deg
+  dot_size: 0.15        # deg
+  rotation_speed: 2   # sec / full rotation
+  depth_mod_center: 0.75    # size = dot_size * (center + amp * depth_norm), depth_norm ∈ [-1, 1]
+  depth_mod_amp: 0.25       # scalar, or [start, end] for a linear ramp over the sphere's visible duration
+  ambiguous_dot_size: 0.20  # dot_size used for fully ambiguous (amp=0) spheres; default makes rendered size ≈ dot_size
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Trial list.  Each entry has a `type` key:
+#
+#   type: text
+#     text: "…"        – instruction text shown on screen
+#                        Press SPACE to advance.
+#
+#   type: kde
+#     phases:          – list of {name, duration} for this trial.
+#                        Each phase may optionally include a fixation-cross spec:
+#                          fixation:
+#                            position: [x, y]   # deg, default [0, 0]
+#                            size:     0.5       # total cross span in deg, default 0.5
+#                            color:    [1, 1, 1] # RGB, default white
+#                        Omit `fixation` on a phase to show no cross during it.
+#     spheres:         – list of sphere specs; each can override any default plus:
+#         position:        [x, y] in deg
+#         random_seed:     int
+#         visible_phases:  [phase_name, …]  (omit = visible in all phases)
+#     Any default key (n_dots, sphere_radius, …) can also be overridden here.
+#     depth_mod_amp accepts a scalar OR [start, end] for a linear ramp over the
+#                   sphere's total visible duration.
+#
+#   type: kde_random
+#     Generates n_trials KDE trials with the following parameters varied randomly:
+#       - phase0 duration: uniform in phase0_duration [min, max]
+#       - phase3 duration: uniform in phase3_duration [min, max]
+#       - initial disambiguation direction: ±phase2_initial_amp (50 / 50)
+#       - target sphere:   uniform random from sphere_positions
+#       - cue sphere:      uniform random from non-target sphere_positions
+#     Fixed parameters per phase are scalars; randomisable parameters are [min, max].
+#     random_seed: optional int – omit for a new seed each run.
+# ─────────────────────────────────────────────────────────────────────────────
+trials:
+
+  - type: text
+    text: "Welcome!\n\nYou will see rotating spheres.\n\nPress SPACE to start."
+
+
+  # kde trial
+
+  # - type: kde
+  #   phases:
+  #     - {name: phase1, duration: 4}
+  #     - {name: phase2, duration: 1}
+  #     - {name: phase3, duration: 3}
+
+  #   spheres:
+  #     - position:       [-3, 0]
+  #       random_seed:    10
+  #       depth_mod_amp: 1
+  #       visible_phases: [phase1]
+  #     - position:       [-3, 0]
+  #       random_seed:    10
+  #       depth_mod_amp: -1
+  #       visible_phases: [phase2, phase3]
+  #     - position:       [3, 0]
+  #       random_seed:    15
+  #       depth_mod_amp: 0 
+  #       visible_phases: [phase3]
+
+
+  # - type: kde
+  #   phases:
+  #     - {name: phase1, duration: 4}
+  #     - {name: phase2, duration: 1}
+  #     - {name: phase3, duration: 0.5}
+  #     - {name: phase4, duration: 0.5}
+  #     - {name: phase5, duration: 10}
+  #   spheres:
+  #     - position:       [-3, 0]
+  #       random_seed:    10
+  #       depth_mod_amp: 1
+  #       visible_phases: [phase1]
+  #     - position:       [-3, 0]
+  #       random_seed:    10
+  #       depth_mod_amp: -1
+  #       visible_phases: [phase2, phase3]
+  #     - position:       [3, 0]
+  #       random_seed:    15
+  #       depth_mod_amp: 0 
+  #       visible_phases: [phase5]
+  #     - position:       [9, 0]
+  #       random_seed:    8
+  #       depth_mod_amp: 0 
+  #       visible_phases: [phase4, phase5]
+  #     - position:       [15, 0]
+  #       random_seed:    2
+  #       depth_mod_amp: 0 
+  #       visible_phases: [phase3, phase4, phase5]
+
+
+
+  # ── Randomised version of the first trial structure ──────────────────────
+  #
+  #   type: kde_simple_random
+  #     n_trials          : number of trials to generate
+  #     random_seed       : int or null for a fresh seed each run
+  #     sphere_positions  : pool of {position, random_seed} entries; prime and probe
+  #                         are drawn randomly (without replacement) each trial
+  #     iti_duration      : [min, max] – blank inter-trial interval (seconds)
+  #     phase1_duration   : scalar – unambiguous priming
+  #     phase2_duration   : [v1, v2, …] discrete choices  OR  scalar – probe delay
+  #     phase3_duration   : scalar – ambiguous probe window
+  #
+  #   Per trial:
+  #     • ITI (phase0): blank screen, uniform random in iti_duration
+  #     • prime and probe positions drawn without replacement from sphere_positions
+  #     • init_amp drawn from {-1, +1} (50 / 50)
+  #     • prime sphere: phase1 with depth_mod_amp = init_amp,
+  #                     phase2+phase3 with depth_mod_amp = -init_amp
+  #     • probe sphere: phase3 with depth_mod_amp = 0 (no depth cue)
+  # ──────────────────────────────────────────────────────────────────────────
+  - type: kde_simple_random
+    n_trials:    40
+    random_seed: 7              # set to null for a fresh seed each run
+
+    sphere_positions:
+      #- {position: [-9, 0], random_seed: 4}
+      - {position: [-3, 0], random_seed: 10}
+      - {position: [ 3, 0], random_seed: 15}
+      #- {position: [ 9, 0], random_seed: 28}
+
+    iti_duration:   [1.0, 3.0]                   # uniform random blank between trials
+    phase1_duration: 4.0
+    phase2_duration: [0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3]  # 5 discrete values, drawn randomly
+    phase3_duration: 3.0
+
+
+  # ── Randomised trial block ────────────────────────────────────────────────
+  - type: kde_random
+    n_trials: 40
+    random_seed: 42           # remove or set to null for a fresh seed each run
+
+    # All sphere positions shown in the display (one entry per sphere).
+    # target and cue are drawn randomly from this list per trial.
+    sphere_positions:
+      - {position: [-12.0, 0.0], random_seed: 4}
+      - {position: [-6.0,  0.0], random_seed: 42}
+      - {position: [0.0,   0.0], random_seed: 12}
+      - {position: [6.0,   0.0], random_seed: 28}
+      - {position: [12.0,  0.0], random_seed: 90}
+
+    # Phase durations: scalar = fixed; [min, max] = uniform random each trial.
+    phase0_duration: [0.0, 1.0]   # blank
+    phase1_duration: 0.5          # fixation flash at target
+    phase2_duration: 4.0          # disambiguation ramp
+    phase2_initial_amp: 0.8       # sign chosen randomly (±); cue gets opposite in phase5
+    phase3_duration: [1.0, 4.0]   # ambiguous maintenance
+    phase4_duration: 0.5          # cue removal + cross at cue position
+    phase5_duration: 2.0          # cue re-appears with opposite disambiguation
+    phase6_duration: 0.2          # fixation flash at target
+    phase7_duration: 4.0          # response window
+
+  - type: text
+    text: "That's it!\n\nThank you for participating."
